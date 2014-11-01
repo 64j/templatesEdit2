@@ -9,8 +9,12 @@ templatesEdit2
 
 <h3>Установка плагина</h3>
 <p>Перед установкой желательно отключить плагин ManagerManager, если он используется для добавления и перемещения вкладок и полей при выводе документа в админке.</p>
+<p>Перед установкой плагина проверяете наличие события <strong>OnDocFormTemplateRender</strong>, если нет такого то выполняете SQL запрос (в админке MODX: Интрументы > Резервное копирование > Восстановить > Выполнить произвольную команду SQL)</p>
+<pre>
+INSERT INTO modx_system_eventnames VALUES (NULL, 'OnDocFormTemplateRender', '1', 'Documents');
+</pre>
 <p>Создать новый плагин <b>mutate_content_dynamic</b> (код из файла <b>mutate_content_dynamic.php</b>), и поставить на событие <b>OnDocFormTemplateRender</b></p>
-<p>Внимание, событие <b>OnDocFormTemplateRender</b> - есть только в DEV версиях MODX</p>
+<p>Внимание, обработка события <b>OnDocFormTemplateRender</b> - есть только в DEV версиях MODX</p>
 <p></p>
 <p>Шаблон вывода полей документа, по умолчанию заложен в коде самого плагина</p>
 
