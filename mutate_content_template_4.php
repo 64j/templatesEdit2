@@ -106,27 +106,27 @@ return array(
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'split_tv5' => array(
+			'split_image' => array(
 				'split' => array(
 					'title' => 'Основное изображение',
 					'roles' => '',
 					'hide' => ''
 				)
 			),
-			'tv5' => array(
+			'image' => array(
 				'tv' => array(
 					'title' => '',
 					'help' => ''
 				)
 			),
-			'split_tv6' => array(
+			'split_images' => array(
 				'split' => array(
 					'title' => 'Дополнительные изображения',
 					'roles' => '',
 					'hide' => ''
 				)
 			),
-			'tv6' => array(
+			'images' => array(
 				'tv' => array(
 					'title' => '',
 					'help' => ''
