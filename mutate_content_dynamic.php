@@ -16,7 +16,7 @@ function ContentFieldSplit() {
 }
 
 function renderContentField($name, $data) {
-	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default;
+	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default, $closeOptGroup;
 	$field = '';
 	list($item_title, $item_description) = explode('||||', $data['field']['title']);
 	$fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
