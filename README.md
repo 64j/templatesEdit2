@@ -16,7 +16,7 @@ INSERT INTO modx_system_eventnames VALUES (NULL, 'OnDocFormTemplateRender', '1',
 <p>Создать новый плагин <b>mutate_content_dynamic</b> (код из файла <b>mutate_content_dynamic.php</b>), и поставить на событие <b>OnDocFormTemplateRender</b></p>
 <p>Внимание, обработка события <b>OnDocFormTemplateRender</b> - есть только в DEV версиях MODX</p>
 <p></p>
-<p>Шаблон вывода полей документа, по умолчанию заложен в коде самого плагина</p>
+<p>Шаблон вывода полей документа, по умолчанию заложен в коде самого плагина, либо можно поставить свой, создав сниппет с названием <b>mutate_content_template_default</b> с кодом из файла <b>mutate_content_template_default.php</b></p>
 
 <h3>Свои шаблоны вывода полей в админке</h3>
 <p>Если нужно изменить под каждый шаблон документа свой вывод полей, <br>
