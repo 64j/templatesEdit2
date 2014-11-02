@@ -636,22 +636,22 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					}
 				}
 				foreach($mutate_content_fields as $k => $v) {
-					if(isset($v['fields']['tv' . $row['id']])) {
-						$mutate_content_fields[$k]['fields']['tv' . $row['id']] = array(
+					if(isset($v['fields'][$row['name']])) {
+						$mutate_content_fields[$k]['fields'][$row['name']] = array(
 							'tv' => $row
 						);
-						if(isset($v['fields']['tv' . $row['id']]['tv']['help'])) {
-							$mutate_content_fields[$k]['fields']['tv' . $row['id']]['tv']['help'] = $v['fields']['tv' . $row['id']]['tv']['help'];
+						if(isset($v['fields'][$row['name']]['tv']['help'])) {
+							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['help'] = $v['fields'][$row['name']]['tv']['help'];
 						}
-						if(isset($v['fields']['tv' . $row['id']]['tv']['title'])) {
-							$mutate_content_fields[$k]['fields']['tv' . $row['id']]['tv']['caption'] = $v['fields']['tv' . $row['id']]['tv']['title'];
-							$mutate_content_fields[$k]['fields']['tv' . $row['id']]['tv']['description'] = '';
+						if(isset($v['fields'][$row['name']]['tv']['title'])) {
+							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['caption'] = $v['fields'][$row['name']]['tv']['title'];
+							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['description'] = '';
 						}
 						unset($row);
 					}
 				}
 				if($row['id']) {
-					$mutate_content_fields['General']['fields']['tv' . $row['id']] = array(
+					$mutate_content_fields['General']['fields'][$row['name']] = array(
 						'tv' => $row
 					);
 				}
