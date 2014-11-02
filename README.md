@@ -34,9 +34,9 @@ INSERT INTO modx_system_eventnames VALUES (NULL, 'OnDocFormTemplateRender', '1',
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'tv_pagetitle' => '',
-			'tv_description' => '',
-			'tv_keywords' => '',
+			'tv_pagetitle' => '', // ТВ мета заголовок
+			'tv_description' => '', // ТВ мета описание
+			'tv_keywords' => '', // ТВ мета ключевые слова
 			'alias' => array(
 				'field' => array(
 					'title' => 'URL'/*$_lang['resource_alias']*/,
