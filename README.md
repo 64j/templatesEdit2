@@ -27,16 +27,16 @@ INSERT INTO modx_system_eventnames VALUES (NULL, 'OnDocFormTemplateRender', '1',
 
 <h3>Добавление / перемещение TV параметров</h3>
 <p>В файле <b>mutate_content_template_4.php</b> пример расположения полей и вкладок для конкретного шаблона (в данном случае с ID 4) в котором TV парметры требуется перенести на другие вкладки либо поменять местами.</p>
-Элемент массива для вывода TV-параметра достаточно прост, в массив [fields] достаточно добавить tvID, где ID — это id параметра.
+Элемент массива для вывода TV-параметра достаточно прост, в массив [fields] достаточно добавить название TV параметра.
 Пример листинга. Вкладка SEO с добавленными параметрами
 <pre>	'Seo' => array(
 		'title' => 'SEO',
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'tv9' => '',
-			'tv7' => '',
-			'tv8' => '',
+			'tv_pagetitle' => '',
+			'tv_description' => '',
+			'tv_keywords' => '',
 			'alias' => array(
 				'field' => array(
 					'title' => 'URL'/*$_lang['resource_alias']*/,
