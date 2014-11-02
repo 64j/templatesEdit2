@@ -139,9 +139,9 @@ return array(
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'tv9' => '',
-			'tv7' => '',
-			'tv8' => '',
+			'tv_pagetitle' => '',
+			'tv_description' => '',
+			'tv_keywords' => '',
 			'alias' => array(
 				'field' => array(
 					'title' => 'URL'/*$_lang['resource_alias']*/,
