@@ -47,6 +47,9 @@ function renderContentField($name, $data) {
 			$field .= '<td valign="top" width="' . $title_width . '">' . $title . '</td>';
 		}
 		$field .= '<td valign="top" style="position:relative;"' . (!$data['tv']['caption'] ? ' colspan="2"' : '') . '>' . renderFormElement($data['tv']['type'], $data['tv']['id'], $data['tv']['default_text'], $data['tv']['elements'], $tvPBV, '', $data['tv']) . $help . '</td></tr>';
+		if(!$data['tv']['hide'] && $field) {
+			$field .= ContentFieldSplit();
+		}
 	}
 	if(isset($data['field'])) {
 		switch($name) {
@@ -310,9 +313,9 @@ function renderContentField($name, $data) {
 				' . $help . '
 				</td></tr>';
 		}
-	}
-	if(!$data['field']['hide'] && !empty($field)) {
-		$field .= ContentFieldSplit();
+		if(!$data['field']['hide'] && $field) {
+			$field .= ContentFieldSplit();
+		}
 	}
 	return $field;
 }
@@ -646,6 +649,9 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 						if(isset($v['fields'][$row['name']]['tv']['title'])) {
 							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['caption'] = $v['fields'][$row['name']]['tv']['title'];
 							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['description'] = '';
+						}
+						if(isset($v['fields'][$row['name']]['tv']['hide'])) {
+							$mutate_content_fields[$k]['fields'][$row['name']]['tv']['hide'] = 1;
 						}
 						unset($row);
 					}
