@@ -14,7 +14,7 @@ templatesEdit2
 INSERT INTO modx_system_eventnames VALUES (NULL, 'OnDocFormTemplateRender', '1', 'Documents');
 </pre>
 <p>Создать новый плагин <b>mutate_content_dynamic</b> (код из файла <b>mutate_content_dynamic.php</b>), и поставить на событие <b>OnDocFormTemplateRender</b></p>
-<p>Внимание, обработка события <b>OnDocFormTemplateRender</b> - есть только в DEV версиях MODX</p>
+<p>Внимание, обработка события <b>OnDocFormTemplateRender</b> - есть только в CUSTOM и DEV версиях MODX</p>
 <p></p>
 <p>Шаблон вывода полей документа, по умолчанию заложен в коде самого плагина, либо можно поставить свой, создав сниппет с названием <b>mutate_content_template_default</b> с кодом из файла <b>mutate_content_template_default.php</b></p>
 
