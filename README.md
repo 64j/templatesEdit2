@@ -1,5 +1,7 @@
 templatesEdit2
 ==============
+<p><b>UPD:</b> добавленна возможность показа TV с типом image<br>
+обязательно добавить в конфигурацию плагина - &showTvImage=Show TV image;list;yes,no;yes</p>
 
 <h2>[EVO] templatesEdit2 — плагин для изменения вида документов в админ панели MODX</h2>
 <p>Этот плагин упрощён по сравнению со своим старшим братом <a href="https://github.com/64j/templatesEdit" target="_blank">templatesEdit</a></p>
