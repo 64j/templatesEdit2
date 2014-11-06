@@ -1,8 +1,8 @@
 //<?php
 /* plugins
 * mutate_content_dynamic
-* Events @OnDocFormTemplateRender
-* properties @&showTvImage=Show TV image;list;yes,no;yes
+* Events OnDocFormTemplateRender
+* properties &showTvImage=Show TV image;list;yes,no;yes
 */
 
 global $_lang, $content;
