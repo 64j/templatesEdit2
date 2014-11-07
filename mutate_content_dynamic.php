@@ -745,7 +745,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 	if($showTvImage) {
 		$output .= '
 		<style>
-		.image_for_tv {padding:8px;margin-right:15px;width:' . $modx->config['thumbWidth'] . 'px;height:' . $modx->config['thumbHeight'] . 'px;line-height:' . $modx->config['thumbHeight'] . 'px;text-align:center;}
+		.image_for_tv {width:' . $modx->config['thumbWidth'] . 'px;height:' . $modx->config['thumbHeight'] . 'px;line-height:' . $modx->config['thumbHeight'] . 'px;text-align:center;}
 		.image_for_tv img {display:inline-block;vertical-align:middle;max-height:100%;max-width:100%;cursor:pointer;}
 		</style>
 		<script type="text/javascript">
