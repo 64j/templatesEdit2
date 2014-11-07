@@ -141,6 +141,16 @@ function renderContentField($name, $data, $showTvImage) {
 				<img src="' . $_style["icons_tooltip_over"] . '" alt="' . $_lang['resource_opt_show_menu_help'] . '" style="cursor:help;" />
 			</td></tr>';
 				break;
+			case 'menusort':
+				$field .= '<tr' . $row_style . '>
+			<td width="' . $title_width . '">' . $title . '</td>
+			<td><input name="menuindex" type="text" maxlength="6" value="' . $content['menuindex'] . '" class="inputBox" style="width:30px;" onChange="documentDirty=true;" />
+				<input type="button" value="&lt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')-1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
+				<input type="button" value="&gt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')+1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
+				<img src="' . $_style["icons_tooltip_over"] . '" alt="' . $_lang['resource_opt_menu_index_help'] . '" style="cursor:help;" />
+				' . $help . '
+			</td></tr>';
+				break;
 			case 'parent':
 				$field .= '<tr' . $row_style . '>
 			<td valign="top"><span class="warning">' . $title . '</span></td>
@@ -233,26 +243,27 @@ function renderContentField($name, $data, $showTvImage) {
 			case 'syncsite':
 			case 'alias_visible':
 			case 'isfolder':
+			case 'hidemenu':	
 				if($name == 'richtext') {
-					$value = $content['richtext'] == 0 && $_REQUEST['a'] == '27' ? 0 : 1;
+					$value = $content[$name] == 0 && $_REQUEST['a'] == '27' ? 0 : 1;
 					$checked = $value ? "checked" : '';
-				} elseif($name == 'donthit') {
-					$value = ($content['donthit'] == 0) ? 0 : 1;
+				} elseif($name == 'donthit' || $name == 'hidemenu') {
+					$value = ($content[$name] == 0) ? 0 : 1;
 					$checked = !$value ? "checked" : '';
 				} elseif($name == 'searchable') {
-					$value = (isset($content['searchable']) && $content['searchable'] == 1) || (!isset($content['searchable']) && $search_default == 1) ? 1 : 0;
+					$value = (isset($content[$name]) && $content[$name] == 1) || (!isset($content[$name]) && $search_default == 1) ? 1 : 0;
 					$checked = $value ? "checked" : '';
 				} elseif($name == 'cacheable') {
-					$value = (isset($content['cacheable']) && $content['cacheable'] == 1) || (!isset($content['cacheable']) && $cache_default == 1) ? 1 : 0;
+					$value = (isset($content[$name]) && $content[$name] == 1) || (!isset($content[$name]) && $cache_default == 1) ? 1 : 0;
 					$checked = $value ? "checked" : '';
 				} elseif($name == 'syncsite') {
 					$value = '1';
 					$checked = $value ? "checked" : '';
 				} elseif($name == 'alias_visible') {
-					$value = (!isset($content['alias_visible']) || $content['alias_visible'] == 1) ? 1 : 0;
+					$value = (!isset($content[$name]) || $content[$name] == 1) ? 1 : 0;
 					$checked = $value ? "checked" : '';
 				} elseif($name == 'isfolder') {
-					$value = ($content['isfolder'] == 1 || $_REQUEST['a'] == '85' || $_REQUEST['isfolder'] == '1') ? 1 : 0;
+					$value = ($content[$name] == 1 || $_REQUEST['a'] == '85' || $_REQUEST[$name] == '1') ? 1 : 0;
 					$checked = $value ? "checked" : '';
 				} else {
 					$value = ($content[$name] == 1) ? 1 : 0;
