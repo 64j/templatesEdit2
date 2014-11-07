@@ -39,7 +39,6 @@ function renderContentField($name, $data, $showTvImage) {
 	$help = $data['field']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['field']['help']) . '" style="cursor:help;" />' : '';
 	$row_style = $data['field']['hide'] || $data['tv']['hide'] ? ' style="display:none;"' : '';
 	$title_width = 150;
-	$input_width = '';
 	$mx_can_pub = $modx->hasPermission('publish_document') ? '' : 'disabled="disabled" ';
 	if(isset($data['tv'])) {
 		$help = $data['tv']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['tv']['help']) . '" style="cursor:help;" />' : '';
