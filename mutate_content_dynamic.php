@@ -16,8 +16,7 @@ function ContentFieldSplit() {
 }
 
 function renderTypeImage($value, $tvid) {
-	$blank = 'data:image/GIF;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-	$src = $value ? MODX_SITE_URL . $value : $blank;
+	$src = $value ? MODX_SITE_URL . $value : '';
 	$out = '<script type="text/javascript">
 	var tvImageInput_' . $tvid . ' = document.getElementById("tv' . $tvid . '");
 	tvImageInput_' . $tvid . '.onkeyup = tvImageInput_' . $tvid . '.oncut = tvImageInput_' . $tvid . '.oninput = function() {
@@ -26,7 +25,7 @@ function renderTypeImage($value, $tvid) {
 		renderTvImageCheck(this.id);
 	}
 	</script>';
-	$out .= '<div class="image_for_tv"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')"' . (!$value ? ' width="100%" height="100%"' : '') . '></div>';
+	$out .= '<div class="image_for_tv"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')"' . (!$value ? ' style="display:none"' : '') . ' /></div>';
 	return $out;
 }
 
@@ -741,8 +740,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 	if($showTvImage) {
 		$output .= '
 		<style>
-		.image_for_tv {width:' . $modx->config['thumbWidth'] . 'px;height:' . $modx->config['thumbHeight'] . 'px;line-height:' . $modx->config['thumbHeight'] . 'px;text-align:center;}
-		.image_for_tv img {display:inline-block;vertical-align:middle;max-height:100%;max-width:100%;cursor:pointer;}
+		.image_for_tv img {float:left;vertical-align:middle;max-height:' . $modx->config['thumbHeight'] . 'px;max-width:' . $modx->config['thumbWidth'] . 'px;cursor:pointer;}
 		</style>
 		<script type="text/javascript">
 		function renderTvImageCheck(id) {
@@ -750,19 +748,16 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 			var img = document.getElementById("image_for_" + id);
 			if (img != null && el.value && img.src != "' . MODX_SITE_URL . '" + el.value) {
 				img.src = "' . MODX_SITE_URL . '" + el.value;
-				img.onload = function() {
-					img.style.width = "auto";
-					img.style.height = "auto";
-				}
 				img.onerror = function() {
-					img.src = "data:image/GIF;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-					img.style.width = "100%";
-					img.style.height = "100%";
+					img.style.display = "none";
+				}
+				img.onload = function() {
+					img.style.width = "' . $modx->config['thumbWidth'] . 'px";
+					img.style.height = "' . $modx->config['thumbHeight'] . 'px";
+					img.style.display = "block";
 				}
 			} else if (!el.value) {
-				img.src = "data:image/GIF;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-				img.style.width = "100%";
-				img.style.height = "100%";
+				img.style.display = "none";
 			}
 		}
 
