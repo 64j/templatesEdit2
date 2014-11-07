@@ -752,8 +752,6 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					img.style.display = "none";
 				}
 				img.onload = function() {
-					img.style.width = "' . $modx->config['thumbWidth'] . 'px";
-					img.style.height = "' . $modx->config['thumbHeight'] . 'px";
 					img.style.display = "block";
 				}
 			} else if (!el.value) {
