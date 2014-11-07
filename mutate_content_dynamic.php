@@ -34,9 +34,6 @@ function renderContentField($name, $data, $showTvImage) {
 	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default, $closeOptGroup;
 	$field = '';
 	list($item_title, $item_description) = explode('||||', $data['field']['title']);
-	if(isset($data['tv'])) {
-		$data['tv'] = $data['tv'];
-	}
 	$fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
 	$title = '<span class="warning">' . $item_title . '</span>' . $fieldDescription;
 	$help = $data['field']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['field']['help']) . '" style="cursor:help;" />' : '';
