@@ -1,6 +1,9 @@
 templatesEdit2
 ==============
-<p><b>UPD:</b> добавленна возможность показа TV с типом image<br>
+<h6>UPD: 7.11.2014</h6>
+<p>Возможность разделения полей hidemenu и menuindex, для вывода отдельно menuindex - использовать menusort</p>
+<h6>UPD: 7.11.2014</h6>
+<p>добавленна возможность показа TV с типом image<br>
 обязательно добавить в конфигурацию плагина - &showTvImage=Show TV image;list;yes,no;yes</p>
 
 <h2>[EVO] templatesEdit2 — плагин для изменения вида документов в админ панели MODX</h2>
