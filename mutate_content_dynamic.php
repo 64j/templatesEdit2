@@ -30,7 +30,7 @@ function renderTypeImage($value, $tvid) {
 }
 
 function renderContentField($name, $data, $showTvImage) {
-	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default, $closeOptGroup;
+	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default, $closeOptGroup, $custom_contenttype;
 	$field = '';
 	list($item_title, $item_description) = explode('||||', $data['field']['title']);
 	$fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
