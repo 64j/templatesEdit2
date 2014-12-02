@@ -5,7 +5,7 @@
 * properties &showTvImage=Show TV image;list;yes,no;yes
 */
 
-global $_lang, $content;
+global $_lang, $content, $docgrp, $replace_richtexteditor;
 
 function strClean($str) {
 	return htmlspecialchars($str, ENT_QUOTES);
