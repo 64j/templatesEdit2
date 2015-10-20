@@ -771,7 +771,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 
 		var lastImageCtrl_tmp = "";
 		setInterval(function() {
-			if (lastImageCtrl) {
+			if (lastImageCtrl != "undefined" && lastImageCtrl) {
 				lastImageCtrl_tmp = lastImageCtrl;
 			} else if (!lastImageCtrl && lastImageCtrl_tmp) {
 				renderTvImageCheck(lastImageCtrl_tmp)
