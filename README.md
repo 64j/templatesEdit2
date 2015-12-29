@@ -16,8 +16,7 @@ templatesEdit2
     ),
     'Prices' =&gt; array(
         'title' =&gt; 'Цены',
-        'fields' =&gt; array(
-        )
+        'fields' =&gt; array()
     ),  
     ..........
     
