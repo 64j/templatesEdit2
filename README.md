@@ -1,5 +1,51 @@
 templatesEdit2
 ==============
+<h6>UPD: 29.12.2015</h6>
+<p>Изменения в функции показа картинок.</p>
+<p>Нововведение.
+Для полей TV с типом Text и Number, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
+<p>Добавленно в конфинурацию плагина, Исключить TV из категорий (id категорий, из которых не будут показываться тв-параметры).
+Сделано для того, чтобы можно было самостоятельно выводить параметры не назначая их по отдельности, а присваивать целыми категориями сразу.</p>
+Пример листинга вывода шаблона:
+
+в созданном сниппет mutate_content_template_4 (то есть для шаблона с id = 4)
+создаём вкладку Props
+и в самом низу ставим запрос
+и получаем, что тв параметры из категории 15 попадают на вкладку - Свойства, а из категории 16 на вклдаку - Цены 
+<pre>
+$mutate_content = array(
+	'Props' => array(
+		'title' => 'Свойства',
+		'fields' => array()
+	),
+	'Prices' => array(
+		'title' => 'Цены',
+		'fields' => array(
+		)
+	),	
+	..........
+	
+);
+
+$sql = $modx->db->query('SELECT id, name, category FROM modx_site_tmplvars WHERE category IN(15,16) ORDER BY category, rank ASC');
+
+if($modx->db->getRecordCount($sql) > 0) {
+	foreach($modx->db->makeArray($sql) as $v) {
+		$mutate_content_tmp[$v['category']][$v['name']] = array();
+	}
+	if(isset($mutate_content_tmp[15])) {
+		$mutate_content['Props']['fields'] = array_merge($mutate_content['Props']['fields'], $mutate_content_tmp[15]);
+	}
+	if(isset($mutate_content_tmp[16])) {
+		$mutate_content['Prices']['fields'] = array_merge($mutate_content['Prices']['fields'], $mutate_content_tmp[16]);
+	}
+}
+
+return $mutate_content;	
+</pre>
+
+
+
 <h6>UPD: 7.11.2014</h6>
 <p>Возможность разделения полей hidemenu и menuindex, для вывода отдельно menuindex - использовать menusort</p>
 <h6>UPD: 7.11.2014</h6>
