@@ -2,7 +2,7 @@
 /* plugins
 * mutate_content_dynamic
 * Events OnDocFormTemplateRender
-* properties &showTvImage=Show TV image;list;yes,no;yes
+* properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
 */
 
 global $_lang, $content, $docgrp, $replace_richtexteditor;
@@ -12,11 +12,12 @@ function strClean($str) {
 }
 
 function ContentFieldSplit() {
-	return '<tr><td colspan="2" style="height:0px"><div class="split"></div></td></tr>';
+	return '<tr><td colspan="2" style="height:0px;padding-top:0;padding-bottom:0"><div class="split"></div></td></tr>';
 }
 
-function renderTypeImage($value, $tvid) {
+function renderTypeImage($value, $tvid, $width) {
 	$src = $value ? MODX_SITE_URL . $value : '';
+	$width = $width / 2;
 	$out = '<script type="text/javascript">
 	var tvImageInput_' . $tvid . ' = document.getElementById("tv' . $tvid . '");
 	tvImageInput_' . $tvid . '.onkeyup = tvImageInput_' . $tvid . '.oncut = tvImageInput_' . $tvid . '.oninput = function() {
@@ -25,7 +26,7 @@ function renderTypeImage($value, $tvid) {
 		renderTvImageCheck(this.id);
 	}
 	</script>';
-	$out .= '<div class="image_for_tv"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')"' . (!$value ? ' style="display:none"' : '') . ' /></div>';
+	$out .= '<div class="image_for_tv" style="' . (!$value ? 'display:none; ' : '') . 'max-width: ' . $width . 'px; max-height: ' . $width . 'px; line-height: ' . $width . 'px; padding: 8px; margin: 2px 2px 0 0; border: 1px #ccc solid; background-color: #fff; text-align: center;"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')" style="display: inline-block; vertical-align: middle; max-width: ' . $width . 'px;max-height: ' . $width . 'px; cursor: pointer;" /></div>';
 	return $out;
 }
 
@@ -37,7 +38,7 @@ function renderContentField($name, $data, $showTvImage) {
 	$title = '<span class="warning">' . $item_title . '</span>' . $fieldDescription;
 	$help = $data['field']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['field']['help']) . '" style="cursor:help;" />' : '';
 	$row_style = $data['field']['hide'] || $data['tv']['hide'] ? ' style="display:none;"' : '';
-	$title_width = 150;
+	$title_width = 160;
 	$mx_can_pub = $modx->hasPermission('publish_document') ? '' : 'disabled="disabled" ';
 	if(isset($data['tv'])) {
 		$help = $data['tv']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['tv']['help']) . '" style="cursor:help;" />' : '';
@@ -57,13 +58,26 @@ function renderContentField($name, $data, $showTvImage) {
 		$title = '<span class="warning">' . $item_title . '</span>' . $tvDescription . $tvInherited;
 		$renderTV = '';
 		if($data['tv']['type'] == 'image' && $showTvImage) {
-			$renderTV = renderTypeImage($tvPBV, $data['tv']['id']);
+			$renderTV = renderTypeImage($tvPBV, $data['tv']['id'], $modx->config['thumbWidth']);
 		}
 		$field .= '<tr' . $row_style . '>';
 		if($data['tv']['caption']) {
 			$field .= '<td valign="top" width="' . $title_width . '">' . $title . '</td>';
 		}
-		$field .= '<td valign="top" style="position:relative;"' . (!$data['tv']['caption'] ? ' colspan="2"' : '') . '>' . renderFormElement($data['tv']['type'], $data['tv']['id'], $data['tv']['default_text'], $data['tv']['elements'], $tvPBV, '', $data['tv']) . $help . $renderTV . '</td></tr>';
+		$field .= '<td valign="top" style="position:relative;"' . (!$data['tv']['caption'] ? ' colspan="2"' : '') . '>' . renderFormElement($data['tv']['type'], $data['tv']['id'], $data['tv']['default_text'], $data['tv']['elements'], $tvPBV, '', $data['tv']) . $help . $renderTV;
+		if(($data['tv']['type'] == 'text' || $data['tv']['type'] == 'number') && $data['tv']['elements']) {
+			$elements = explode('||', $data['tv']['elements']);
+			$field .= '<datalist id="list' . $data['tv']['id'] . '">';
+			foreach($elements as $element_value) {
+				$field .= '<option>' . $element_value . '</option> ';
+			}
+			$field .= '</datalist>';
+			$field .= '<script type="text/javascript">
+			document.mutate.tv' . $data['tv']['id'] . '.setAttribute("list", "list' . $data['tv']['id'] . '");
+			document.mutate.tv' . $data['tv']['id'] . '.style.paddingRight = 0;
+			</script>';
+		}
+		$field .= '</td></tr>';
 		if(!$data['tv']['hide'] && $field) {
 			$field .= ContentFieldSplit();
 		}
@@ -637,6 +651,7 @@ if(!$render_template && $render_template_default) {
 
 if($modx->Event->name == 'OnDocFormTemplateRender') {
 	$showTvImage = $showTvImage == 'yes' ? true : false;
+	$excludeTvCategory = $excludeTvCategory ? explode(',', $excludeTvCategory) : array();
 	// Variables
 	if(($content['type'] == 'document' || $_REQUEST['a'] == '4') || ($content['type'] == 'reference' || $_REQUEST['a'] == 72)) {
 		$rs = $modx->db->select("
@@ -665,6 +680,17 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 						);
 					}
 				}
+				
+				foreach($mutate_content_fields as $k => $v) {
+					if(isset($v['fields']['tv' . $row['id']])) {
+						$position = array_search('tv' . $row['id'], array_keys($v['fields']));
+						$mutate_content_fields[$k]['fields'] = array_slice($mutate_content_fields[$k]['fields'], 0, $position, true) +
+							array($row['name'] => $v['fields']['tv' . $row['id']]) +
+							array_slice($mutate_content_fields[$k]['fields'], $position, count($mutate_content_fields[$k]['fields']), true);
+						unset($mutate_content_fields[$k]['fields']['tv' . $row['id']]);
+					}
+				}
+				
 				foreach($mutate_content_fields as $k => $v) {
 					if(isset($v['fields'][$row['name']])) {
 						$mutate_content_fields[$k]['fields'][$row['name']] = array(
@@ -683,7 +709,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 						unset($row);
 					}
 				}
-				if($row['id']) {
+				if($row['id'] && !in_array($row['category'], $excludeTvCategory)) {
 					$mutate_content_fields['General']['fields'][$row['name']] = array(
 						'tv' => $row
 					);
@@ -749,34 +775,35 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 
 	if($showTvImage) {
 		$output .= '
-		<style>
-		.image_for_tv img {float:left;vertical-align:middle;max-height:' . $modx->config['thumbHeight'] . 'px;max-width:' . $modx->config['thumbWidth'] . 'px;cursor:pointer;}
-		</style>
 		<script type="text/javascript">
-		function renderTvImageCheck(id) {
-			var el = document.getElementById(id);
-			var img = document.getElementById("image_for_" + id);
-			if (img != null && el.value && img.src != "' . MODX_SITE_URL . '" + el.value) {
-				img.src = "' . MODX_SITE_URL . '" + el.value;
-				img.onerror = function() {
-					img.style.display = "none";
-				}
-				img.onload = function() {
-					img.style.display = "block";
-				}
-			} else if (!el.value) {
-				img.style.display = "none";
-			}
-		}
-
 		var lastImageCtrl_tmp = "";
 		setInterval(function() {
-			if (lastImageCtrl != "undefined" && lastImageCtrl) {
-				lastImageCtrl_tmp = lastImageCtrl;
-			} else if (!lastImageCtrl && lastImageCtrl_tmp) {
-				renderTvImageCheck(lastImageCtrl_tmp)
+			if (typeof lastImageCtrl != "undefined") {
+				if(lastImageCtrl) {
+					lastImageCtrl_tmp = lastImageCtrl;
+				}
+				else if(!lastImageCtrl && lastImageCtrl_tmp) {
+					renderTvImageCheck(lastImageCtrl_tmp);
+				}
 			}
 		}, 300);
+		
+		function renderTvImageCheck(id) {
+			var el = document.getElementById(id), img;
+			if(img = document.getElementById("image_for_" + id)) {
+				if (el.value) {
+					img.src = "' . MODX_SITE_URL . '" + el.value;
+					img.onerror = function() {
+						this.parentElement.style.display = "none";
+					}
+					img.onload = function() {
+						this.parentElement.style.display = "block";
+					}
+				} else {
+					 img.parentElement.style.display = "none";
+				}
+			}
+		}
 		</script>';
 	}
 
