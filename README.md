@@ -3,54 +3,45 @@ templatesEdit2
 <h2>[EVO] templatesEdit2 — плагин для изменения вида документов в админ панели MODX</h2>
 
 
-<h6>UPD: 29.12.2015</h6>
-<p>Изменения в функции показа картинок.</p>
-<p>Нововведение.
-Для полей TV с типом Text и Number, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
-<p>Добавленно в конфигурацию плагина, Исключить TV из категорий (id категорий, из которых не будут показываться тв-параметры).
-По умолчанию все параметры не попавшие на другие вкладки - выводятся на вкладке Основные  [General]
-Сделано для того, чтобы можно было самостоятельно выводить параметры не назначая их по отдельности, а присваивать целыми категориями сразу.</p>
-Пример листинга вывода шаблона:
-
-в созданном сниппет <b>mutate_content_template_5</b> (то есть для шаблона с id = 5, в корне прилагается рабочий файл с проекта)
-создаём вкладку Props и Prices
-и в самом низу ставим запрос на получение параметров из определённых категорий
-и получаем, что тв параметры из категории 15 попадают на вкладку - Свойства, а из категории 16 на вклдаку - Цены 
-<pre>
-$mutate_content = array(
-	'Props' => array(
-		'title' => 'Свойства',
-		'fields' => array()
-	),
-	'Prices' => array(
-		'title' => 'Цены',
-		'fields' => array(
-		)
-	),	
-	..........
-	
+<h6><a id="user-content-upd-29122015" class="anchor" href="#upd-29122015" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>UPD: 29.12.2015</strong></h6>
+<p>1. Изменения в функции показа картинок.</p>
+<p>2 .Нововведение. Для полей TV с типом <strong>Text</strong> и <strong>Number</strong>, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
+<p>3. Добавленно в конфигурацию плагина, <strong>Исключить TV из категорий</strong> (id категорий, из которых не будут показываться тв-параметры). По умолчанию все параметры не попавшие на другие вкладки - выводятся на вкладке Основные [General] Сделано для того, чтобы можно было самостоятельно выводить параметры не назначая их по отдельности, а присваивать целыми категориями сразу.</p>
+<p>В созданном сниппет <b>mutate_content_template_5</b> (то есть для шаблона с id = 5, в корне прилагается рабочий файл с проекта) создаём вкладку <strong>Props</strong> и <strong>Prices</strong> и в самом низу ставим запрос на получение параметров из определённых категорий и получаем, что тв параметры из категории <strong>15</strong> попадают на вкладку - <strong>Свойства</strong>, а из категории <strong>16</strong> на вклдаку - <strong>Цены</strong></p>
+<p>Пример листинга вывода шаблона:</p>
+<pre>$mutate_content = array(
+    'Props' =&gt; array(
+        'title' =&gt; 'Свойства',
+        'fields' =&gt; array()
+    ),
+    'Prices' =&gt; array(
+        'title' =&gt; 'Цены',
+        'fields' =&gt; array(
+        )
+    ),  
+    ..........
+    
 );
 
-$sql = $modx->db->query('SELECT id, name, category FROM modx_site_tmplvars WHERE category IN(15,16) ORDER BY category, rank ASC');
+$sql = $modx-&gt;db-&gt;query('SELECT id, name, category FROM modx_site_tmplvars WHERE category IN(15,16) ORDER BY category, rank ASC');
 
-if($modx->db->getRecordCount($sql) > 0) {
-	foreach($modx->db->makeArray($sql) as $v) {
-		$mutate_content_tmp[$v['category']][$v['name']] = array();
-	}
-	
-	// находим параметры из категории 15 и выводим
-	if(isset($mutate_content_tmp[15])) {
-		$mutate_content['Props']['fields'] = array_merge($mutate_content['Props']['fields'], $mutate_content_tmp[15]);
-	}
-	
-	// находим параметры из категории 16 и выводим
-	if(isset($mutate_content_tmp[16])) {
-		$mutate_content['Prices']['fields'] = array_merge($mutate_content['Prices']['fields'], $mutate_content_tmp[16]);
-	}
+if($modx-&gt;db-&gt;getRecordCount($sql) &gt; 0) {
+    foreach($modx-&gt;db-&gt;makeArray($sql) as $v) {
+        $mutate_content_tmp[$v['category']][$v['name']] = array();
+    }
+    
+    // находим параметры из категории 15 и выводим
+    if(isset($mutate_content_tmp[15])) {
+        $mutate_content['Props']['fields'] = array_merge($mutate_content['Props']['fields'], $mutate_content_tmp[15]);
+    }
+    
+    // находим параметры из категории 16 и выводим
+    if(isset($mutate_content_tmp[16])) {
+        $mutate_content['Prices']['fields'] = array_merge($mutate_content['Prices']['fields'], $mutate_content_tmp[16]);
+    }
 }
 
-return $mutate_content;	
-</pre>
+return $mutate_content;</pre>
 
 
 
