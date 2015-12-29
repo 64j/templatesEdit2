@@ -34,9 +34,13 @@ if($modx->db->getRecordCount($sql) > 0) {
 	foreach($modx->db->makeArray($sql) as $v) {
 		$mutate_content_tmp[$v['category']][$v['name']] = array();
 	}
+	
+	// находим параметры из категории 15 и выводим
 	if(isset($mutate_content_tmp[15])) {
 		$mutate_content['Props']['fields'] = array_merge($mutate_content['Props']['fields'], $mutate_content_tmp[15]);
 	}
+	
+	// находим параметры из категории 16 и выводим
 	if(isset($mutate_content_tmp[16])) {
 		$mutate_content['Prices']['fields'] = array_merge($mutate_content['Prices']['fields'], $mutate_content_tmp[16]);
 	}
