@@ -2,7 +2,7 @@ templatesEdit2
 ==============
 <h2>[EVO] templatesEdit2 — плагин для изменения вида документов в админ панели MODX</h2>
 
-
+Картинки на можно посмотреть на <a href="http://wexar.ru/evo-templatesedit2.html" target="_blank"> нашем сайте</a><br>
 <h6><a id="user-content-upd-29122015" class="anchor" href="#upd-29122015" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>UPD: 29.12.2015</strong></h6>
 <p>1. Изменения в функции показа картинок.</p>
 <p>2. Нововведение. Для полей TV с типом <strong>Text</strong> и <strong>Number</strong>, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
