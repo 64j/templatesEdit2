@@ -1,6 +1,6 @@
 //<?php
 /* plugins
-* mutate_content_dynamic
+* templatesEdit2
 * Events OnDocFormTemplateRender
 * properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
 */
