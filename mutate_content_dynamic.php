@@ -213,8 +213,7 @@ function renderContentField($name, $data, $showTvImage) {
 						
 						$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array('ta')) : array('ta');
 						$richtexteditorIds[$which_editor] = is_array($richtexteditorIds[$which_editor]) ? array_merge($richtexteditorIds[$which_editor], array('ta')) : array('ta');
-						$richtexteditorOptions[$which_editor] = is_array($richtexteditorOptions[$which_editor]) ? array_merge($richtexteditorOptions[$which_editor], array('ta')) : array('ta');
-										
+						$richtexteditorOptions[$which_editor]['ta'] = '';
 					} else {
 						$field .= '<div style="width:100%"><textarea class="phptextarea" id="ta" name="ta" style="width:100%; height: 400px;" onchange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea></div>';
 					}
@@ -668,7 +667,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					// Add richtext editor to the list
 					$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array("tv" . $row['id'])) : array("tv" . $row['id']);
 					$richtexteditorIds[$which_editor] = is_array($richtexteditorIds[$which_editor]) ? array_merge($richtexteditorIds[$which_editor], array("tv" . $row['id'])) : array("tv" . $row['id']);
-					$richtexteditorOptions[$which_editor] = is_array($richtexteditorOptions[$which_editor]) ? array_merge($richtexteditorOptions[$which_editor], array("tv" . $row['id'])) : array("tv" . $row['id']);				
+					$richtexteditorOptions[$which_editor]["tv" . $row['id']] = '';				
 				}
 				
 				foreach($mutate_content_fields as $k => $v) {
