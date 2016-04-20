@@ -5,7 +5,7 @@
 * properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
 */
 
-global $_lang, $content, $docgrp, $replace_richtexteditor;
+global $_lang, $content, $docgrp, $which_editor, $replace_richtexteditor, $richtexteditorIds, $richtexteditorOptions;
 
 function strClean($str) {
 	return htmlspecialchars($str, ENT_QUOTES);
@@ -31,7 +31,7 @@ function renderTypeImage($value, $tvid, $width) {
 }
 
 function renderContentField($name, $data, $showTvImage) {
-	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $search_default, $publish_default, $cache_default, $closeOptGroup, $custom_contenttype;
+	global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $replace_richtexteditor, $richtexteditorIds, $richtexteditorOptions, $search_default, $publish_default, $cache_default, $closeOptGroup, $custom_contenttype;
 	$field = '';
 	list($item_title, $item_description) = explode('||||', $data['field']['title']);
 	$fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
@@ -88,7 +88,7 @@ function renderContentField($name, $data, $showTvImage) {
 				if($content['type'] == 'reference' || $_REQUEST['a'] == '72') {
 					$field .= '<tr' . $row_style . '>
 				<td>' . $title . ' <img name="llock" src="' . $_style["tree_folder"] . '" alt="tree_folder" onClick="enableLinkSelection(!allowLinkSelection);" style="cursor:pointer;" /></td>
-				<td><input name="ta" type="text" maxlength="255" value="' . (!empty($content['content']) ? stripslashes($content['content']) : "http://") . '" class="inputBox" onChange="documentDirty=true;" />' . $help . '</td></tr>';
+				<td><input id="ta" name="ta" type="text" maxlength="255" value="' . (!empty($content['content']) ? stripslashes($content['content']) : "http://") . '" class="inputBox" onChange="documentDirty=true;" />' . $help . '</td></tr>';
 				}
 				break;
 			case 'introtext':
@@ -210,15 +210,15 @@ function renderContentField($name, $data, $showTvImage) {
 					$field .= '<tr' . $row_style . '><td colspan="2">';
 					if(($content['richtext'] == 1 || $_REQUEST['a'] == '4') && $use_editor == 1) {
 						$field .= '<textarea id="ta" name="ta" cols="" rows="" style="width:100%; height: 400px;" onChange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea>';
-						if(is_array($replace_richtexteditor)) {
-							$replace_richtexteditor = array_merge($replace_richtexteditor, array(
-								'ta'
-							));
-						} else {
-							$replace_richtexteditor = array(
-								'ta'
-							);
-						}
+						
+						$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array('ta')) : array('ta');
+
+						// Richtext-[*content*]
+						$richtexteditorIds = array();
+						$richtexteditorOptions = array();
+						$richtexteditorIds[$which_editor][] = 'ta';
+						$richtexteditorOptions[$which_editor]['ta'] = '';
+										
 					} else {
 						$field .= '<div style="width:100%"><textarea class="phptextarea" id="ta" name="ta" style="width:100%; height: 400px;" onchange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea></div>';
 					}
@@ -256,10 +256,10 @@ function renderContentField($name, $data, $showTvImage) {
 			case 'syncsite':
 			case 'alias_visible':
 			case 'isfolder':
-			case 'hidemenu':	
+			case 'hidemenu':
 				if($name == 'richtext') {
 					$value = $content[$name] == 0 && $_REQUEST['a'] == '27' ? 0 : 1;
-					$checked = $value ? "checked" : '';
+					$checked = $value ? "checked" : '';					
 				} elseif($name == 'donthit' || $name == 'hidemenu') {
 					$value = ($content[$name] == 0) ? 0 : 1;
 					$checked = !$value ? "checked" : '';
@@ -670,15 +670,12 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 				// Go through and display all Template Variables
 				if($row['type'] == 'richtext' || $row['type'] == 'htmlarea') {
 					// Add richtext editor to the list
-					if(is_array($replace_richtexteditor)) {
-						$replace_richtexteditor = array_merge($replace_richtexteditor, array(
-							"tv" . $row['id']
-						));
-					} else {
-						$replace_richtexteditor = array(
-							"tv" . $row['id']
-						);
-					}
+					$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array("tv" . $row['id'])) : array("tv" . $row['id']);
+					// Richtext-[*content*]
+					$richtexteditorIds = array();
+					$richtexteditorOptions = array();
+					$richtexteditorIds[$which_editor][] = "tv" . $row['id'];
+					$richtexteditorOptions[$which_editor]["tv" . $row['id']] = '';					
 				}
 				
 				foreach($mutate_content_fields as $k => $v) {
@@ -721,7 +718,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 
 
 	$output = '';
-	$output .= $modx->db->getValue($rs); //
+	//$output .= $modx->db->getValue($rs); //
 	$output .= "\n\n\t" . '<!------ templatesEdit ------->' . "\n\t";
 
 	foreach($mutate_content_fields as $tabName => $tab) {
