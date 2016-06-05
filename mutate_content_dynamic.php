@@ -1,8 +1,18 @@
 //<?php
-/* plugins
+/**
 * templatesEdit2
-* Events OnDocFormTemplateRender
-* properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
+*
+* @category    plugin
+* @version     2.1
+* @license     http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+* @package     modx
+* @internal    @events OnDocFormTemplateRender
+* @internal    @modx_category Manager and Admin
+* @internal    @properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
+* @reportissues https://github.com/64j/templatesEdit2
+* @documentation Official docs https://github.com/64j/templatesEdit2
+* @author      http://wexar.ru/
+* @lastupdate  29/12/2015
 */
 
 global $_lang, $content, $docgrp, $which_editor, $replace_richtexteditor, $richtexteditorIds, $richtexteditorOptions;
