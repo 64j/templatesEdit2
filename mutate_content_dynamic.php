@@ -107,7 +107,7 @@ function renderContentField($name, $data, $showTvImage) {
 					$field .= '<td valign="top" width="' . $title_width . '">' . $title . '</td>';
 				}
 				$field .= '
-			<td valign="top"' . (!$data['field']['title'] ? ' colspan="2"' : '') . '><textarea name="introtext" class="inputBox" rows="3" cols="" onChange="documentDirty=true;" style="width:100%">' . $modx->htmlspecialchars(stripslashes($content['introtext'])) . '</textarea>
+			<td valign="top"' . (!$data['field']['title'] ? ' colspan="2"' : '') . '><textarea name="introtext" id="introtext" class="inputBox" rows="3" cols="" onChange="documentDirty=true;" style="width:100%">' . $modx->htmlspecialchars(stripslashes($content['introtext'])) . '</textarea>
 			' . $help . '
 			</td></tr>';
 				break;
