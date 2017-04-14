@@ -737,7 +737,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 	form#mutate .tab-page .inputBox, form#mutate .tab-page input[name="ta"].inputBox { width: 100% }
 	form#mutate .tab-page>table>tr>td, form#mutate .tab-page>table>tbody>tr>td { position: relative }
 	form#mutate .tab-page span.warning { display: inline-block; padding-right: 16px }
-	form#mutate .tab-page span.warning + img { position: absolute; right: 0; top: 50%; margin-top: -8px; height: 16px; opacity: 0.3; transition: opacity 0.3s }
+	form#mutate .tab-page span.warning + img { position: absolute; right: 0; top: 50%; margin-top: -8px; height: 16px; opacity: 0.3; transition: opacity 0.3s; transform: translateZ(0) }
 	form#mutate .tab-page span.warning + img:hover { opacity: 1 }
 	form#mutate .tab-page input[name="menuindex"].inputBox { width: 60px !important }
 	</style>';
