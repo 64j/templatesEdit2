@@ -1,19 +1,21 @@
 <?php
 /**
-* templatesEdit2
-*
-* @category    plugin
-* @version     2.2
-* @license     http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
-* @package     modx
-* @internal    @events OnDocFormTemplateRender
-* @internal    @modx_category Manager and Admin
-* @internal    @properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
-* @reportissues https://github.com/64j/templatesEdit2
-* @documentation Official docs https://github.com/64j/templatesEdit2
-* @author      http://wexar.ru/
-* @lastupdate  8/04/2017
-*/
+ * templatesEdit2
+ *
+ * render fields and tabs in edit docs
+ *
+ * @category         plugin
+ * @version          2.2
+ * @license          http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @package          modx
+ * @internal         @events OnDocFormTemplateRender
+ * @internal         @modx_category Manager and Admin
+ * @internal         @properties &showTvImage=Show images in TV;list;yes,no;yes &excludeTvCategory=Exclude TVs in categories;text;
+ * @reportissues     https://github.com/64j/templatesEdit2
+ * @documentation    Official docs https://github.com/64j/templatesEdit2
+ * @author           http://wexar.ru/
+ * @lastupdate       15/07/2017
+ */
 
 global $_lang, $content, $docgrp, $which_editor, $replace_richtexteditor, $richtexteditorIds, $richtexteditorOptions;
 
@@ -41,8 +43,6 @@ function renderContentField($name, $data, $showTvImage) {
 	$field = '';
 	list($item_title, $item_description) = explode('||||', $data['field']['title']);
 	$fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
-	$title = '<span class="warning">' . $item_title . '</span>' . $fieldDescription;
-	$help = $data['field']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['field']['help']) . '" style="cursor:help;" />' : '';
 	$hide = $data['field']['hide'] || $data['tv']['hide'] ? true : false;
 	$roles = !empty($data['field']['roles']) ? $data['field']['roles'] : (!empty($data['tv']['roles']) ? $data['tv']['roles'] : '');
 
@@ -52,14 +52,14 @@ function renderContentField($name, $data, $showTvImage) {
 			if(($role[0] != '!' && trim($role) != $_SESSION['mgrRole']) || ($role[0] == '!' && ltrim($role, '!') == $_SESSION['mgrRole'])) {
 				$hide = true;
 			}
-		}		
+		}
 	}
 
 	$row_style = $hide ? ' style="display:none;"' : '';
-	$title_width = 200;
 	$mx_can_pub = $modx->hasPermission('publish_document') ? '' : 'disabled="disabled" ';
 	if(isset($data['tv'])) {
-		$help = $data['tv']['help'] ? ' <img src="' . $_style["icons_tooltip_over"] . '" alt="' . stripcslashes($data['tv']['help']) . '" style="cursor:help;" />' : '';
+		$title = '<label for="tv' . $data['tv']['id'] . '" class="warning">' . $item_title . '</label>' . $fieldDescription;
+		$help = !empty($data['tv']['help']) ? '<i class="fa fa-question-circle" data-tooltip="' . stripcslashes($data['tv']['help']) . '"></i>' : '';
 		if(array_key_exists('tv' . $data['tv']['id'], $_POST)) {
 			if($data['tv']['type'] == 'listbox-multiple') {
 				$tvPBV = implode('||', $_POST['tv' . $data['tv']['id']]);
@@ -78,11 +78,7 @@ function renderContentField($name, $data, $showTvImage) {
 		if($data['tv']['type'] == 'image' && $showTvImage) {
 			$renderTV = renderTypeImage($tvPBV, $data['tv']['id'], $modx->config['thumbWidth']);
 		}
-		$field .= '<tr' . $row_style . '>';
-		if($data['tv']['caption']) {
-			$field .= '<td valign="top" width="' . $title_width . '">' . $title . '</td>';
-		}
-		$field .= '<td valign="top" style="position:relative;"' . (!$data['tv']['caption'] ? ' colspan="2"' : '') . '>' . renderFormElement($data['tv']['type'], $data['tv']['id'], $data['tv']['default_text'], $data['tv']['elements'], $tvPBV, '', $data['tv']) . $help . $renderTV;
+		$field .= renderFormElement($data['tv']['type'], $data['tv']['id'], $data['tv']['default_text'], $data['tv']['elements'], $tvPBV, '', $data['tv']) . $renderTV;
 		if(($data['tv']['type'] == 'text' || $data['tv']['type'] == 'number') && $data['tv']['elements']) {
 			$elements = explode('||', $data['tv']['elements']);
 			$field .= '<datalist id="list' . $data['tv']['id'] . '">';
@@ -95,30 +91,24 @@ function renderContentField($name, $data, $showTvImage) {
 			document.mutate.tv' . $data['tv']['id'] . '.style.paddingRight = 0;
 			</script>';
 		}
-		$field .= '</td></tr>';
 	}
 	if(isset($data['field'])) {
+		$title = '<label for="' . $name . '" class="warning">' . $item_title . '</label>' . $fieldDescription;
+		$help = !empty($data['field']['help']) ? '<i class="fa fa-question-circle" data-tooltip="' . stripcslashes($data['field']['help']) . '"></i>' : '';
 		switch($name) {
 			case 'weblink':
 				if($content['type'] == 'reference' || $_REQUEST['a'] == '72') {
-					$field .= '<tr' . $row_style . '>
-				<td>' . $title . '' . $help . ' <img name="llock" src="' . $_style["tree_folder"] . '" alt="tree_folder" onClick="enableLinkSelection(!allowLinkSelection);" style="cursor:pointer;" /></td>
-				<td><input id="ta" name="ta" type="text" maxlength="255" value="' . (!empty($content['content']) ? stripslashes($content['content']) : "http://") . '" class="inputBox" onChange="documentDirty=true;" /></td></tr>';
+					$field .= '
+				<i id="llock" class="' . $_style["actions_chain"] . '" onclick="enableLinkSelection(!allowLinkSelection);"></i>
+				<input id="ta" class="form-control" name="ta" type="text" maxlength="255" value="' . (!empty($content['content']) ? stripslashes($content['content']) : "http://") . '" onChange="documentDirty=true;" />
+				';
 				}
 				break;
 			case 'introtext':
-				$field .= '<tr' . $row_style . '>';
-				if($data['field']['title']) {
-					$field .= '<td valign="top" width="' . $title_width . '">' . $title . '' . $help . '</td>';
-				}
-				$field .= '
-			<td valign="top"' . (!$data['field']['title'] ? ' colspan="2"' : '') . '><textarea name="introtext" id="introtext" class="inputBox" rows="3" cols="" onChange="documentDirty=true;" style="width:100%">' . $modx->htmlspecialchars(stripslashes($content['introtext'])) . '</textarea>
-			</td></tr>';
+				$field .= '<textarea id="introtext" class="form-control" name="introtext" rows="3" wrap="soft" onChange="documentDirty=true;">' . $modx->htmlspecialchars(stripslashes($content['introtext'])) . '</textarea>';
 				break;
 			case 'template':
-				$field .= '<tr' . $row_style . '>
-			<td>' . $title . '' . $help . '</td>
-			<td><select id="template" name="template" class="inputBox" onChange="templateWarning();">
+				$field .= '<select id="template" class="form-control" name="template" onChange="templateWarning();">
 			<option value="0">(blank)</option>';
 				$rs = $modx->db->select("t.templatename, t.id, c.category", $modx->getFullTableName('site_templates') . " AS t LEFT JOIN " . $modx->getFullTableName('categories') . " AS c ON t.category = c.id", '', 'c.category, t.templatename ASC');
 				$currentCategory = '';
@@ -152,32 +142,28 @@ function renderContentField($name, $data, $showTvImage) {
 					$field .= "</optgroup>";
 				}
 				$field .= '
-			</select>
-			</td></tr>';
-				break;
-			case 'menuindex':
-				$field .= '<tr' . $row_style . '>
-			<td width="' . $title_width . '">' . $title . '</td>
-			<td><input name="menuindex" type="text" maxlength="6" value="' . $content['menuindex'] . '" class="inputBox" style="width:60px;" onChange="documentDirty=true;" />
-				<input type="button" value="&lt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')-1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
-				<input type="button" value="&gt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')+1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
-				<img src="' . $_style["icons_tooltip_over"] . '" alt="' . $_lang['resource_opt_menu_index_help'] . '" style="cursor:help;" />
-				<span class="warning">' . $_lang['resource_opt_show_menu'] . '</span>
-				<input name="hidemenucheck" type="checkbox" class="checkbox" ' . ($content['hidemenu'] != 1 ? 'checked="checked"' : '') . ' onClick="changestate(document.mutate.hidemenu);" />
-				<input type="hidden" name="hidemenu" class="hidden" value="' . ($content['hidemenu'] == 1 ? 1 : 0) . '" />
-				<img src="' . $_style["icons_tooltip_over"] . '" alt="' . $_lang['resource_opt_show_menu_help'] . '" style="cursor:help;" />
-			</td></tr>';
+				</select>
+				';
 				break;
 			case 'menusort':
-				$field .= '<tr' . $row_style . '>
-			<td width="' . $title_width . '">' . $title . '' . $help . '</td>
-			<td><input name="menuindex" type="text" maxlength="6" value="' . $content['menuindex'] . '" class="inputBox" style="width:60px;" onChange="documentDirty=true;" /><input type="button" value="&lt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')-1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" /><input type="button" value="&gt;" onClick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')+1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
-			</td></tr>';
+			case 'menuindex':
+				$field .= '
+				<span class="input-group">
+					<span class="input-group-addon">
+						<a class="text-muted" href="javascript:;" onclick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')-1;elm.value=v>0? v:0;elm.focus();documentDirty=true;return false;">
+							<i class="fa fa-minus"></i>
+						</a>
+					</span>
+					<input id="' . $name . '" class="form-control" name="menuindex" type="text" maxlength="6" value="' . $content['menuindex'] . '" onchange="documentDirty=true;" />
+					<span class="input-group-addon">
+						<a class="text-muted" href="javascript:;" onclick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+\'\')+1;elm.value=v>0? v:0;elm.focus();documentDirty=true;return false;">
+							<i class="fa fa-plus"></i>
+						</a>
+					</span>
+				</span>
+				';
 				break;
 			case 'parent':
-				$field .= '<tr' . $row_style . '>
-			<td>' . $title . '' . $help . '</td>
-			<td>';
 				$parentlookup = false;
 				if(isset($_REQUEST['id'])) {
 					if($content['parent'] == 0) {
@@ -209,62 +195,46 @@ function renderContentField($name, $data, $showTvImage) {
 					}
 				}
 				$field .= '
-					<img alt="tree_folder" name="plock" src="' . $_style["tree_folder"] . '" onClick="enableParentSelection(!allowParentSelection);" style="cursor:pointer;" />
-					<b><span id="parentName">' . (isset($_REQUEST['pid']) ? $_REQUEST['pid'] : $content['parent']) . ' (' . $parentname . ')</span></b>
-					<input type="hidden" name="parent" value="' . (isset($_REQUEST['pid']) ? $_REQUEST['pid'] : $content['parent']) . '" onChange="documentDirty=true;" />
-				</td></tr>';
+					<div class="form-control">
+						<i id="plock" class="' . $_style["actions_folder"] . '" onclick="enableParentSelection(!allowParentSelection);"></i>
+						<b><span id="parentName">' . (isset($_REQUEST['pid']) ? $_REQUEST['pid'] : $content['parent']) . ' (' . $parentname . ')</span></b>
+						<input id="parent" name="parent" type="hidden" value="' . (isset($_REQUEST['pid']) ? $_REQUEST['pid'] : $content['parent']) . '" onChange="documentDirty=true;" />
+					</div>
+					';
 				break;
 			case 'content':
 				if($content['type'] == 'document' || $_REQUEST['a'] == '4') {
-					$field .= '<tr' . $row_style . '><td colspan="2">';
+					$field .= '<textarea id="ta" class="form-control" name="ta" rows="20" wrap="soft" onChange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea>';
 					if(($content['richtext'] == 1 || $_REQUEST['a'] == '4') && $use_editor == 1) {
-						$field .= '<textarea id="ta" name="ta" cols="" rows="" style="width:100%; height: 400px;" onChange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea>';
-						
-//						$field .= '<span class="warning">' . $_lang['which_editor_title'] . '</span>
-//						<select id="which_editor" name="which_editor" onChange="changeRTE();">
-//							<option value="none">' . $_lang['none'] . '</option>';					
-//                        if (is_array($OnRichTextEditorRegister)) {
-//                            for ($i = 0; $i < count($OnRichTextEditorRegister); $i++) {
-//                                $editor = $OnRichTextEditorRegister[$i];
-//                                $field .= '<option value="' . $editor . '"' . ($modx->config['which_editor'] == $editor ? ' selected="selected"' : '') . '>' . $editor . '</option>';
-//                            }
-//                        }			
-//						$field .= '</select>';
-						
 						// Richtext-[*content*]
 						$richtexteditorIds = array();
 						$richtexteditorOptions = array();
-												
 						$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array('ta')) : array('ta');
 						$richtexteditorIds[$which_editor] = is_array($richtexteditorIds[$which_editor]) ? array_merge($richtexteditorIds[$which_editor], array('ta')) : array('ta');
 						$richtexteditorOptions[$which_editor]['ta'] = '';
-					} else {
-						$field .= '<div style="width:100%"><textarea class="phptextarea" id="ta" name="ta" style="width:100%; height: 400px;" onchange="documentDirty=true;">' . $modx->htmlspecialchars($content['content']) . '</textarea></div>';
 					}
-					$field .= '</td></tr>';
 				}
 				break;
 			case 'published':
-				$field .= '<tr' . $row_style . '>
-                <td width="' . $title_width . '">' . $title . '' . $help . '</td>
-                <td><input ' . $mx_can_pub . 'name="publishedcheck" type="checkbox" class="checkbox" ' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? "checked" : '') . ' onClick="changestate(document.mutate.published);" />
+				$field .= '
+				<input id="published" class="form-checkbox" name="publishedcheck" type="checkbox" ' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? "checked" : '') . ' onClick="changestate(document.mutate.published);" ' . $mx_can_pub . ' />
                 <input type="hidden" name="published" value="' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? 1 : 0) . '" />
-				</td></tr>';
+				';
 				break;
 			case 'pub_date':
 			case 'unpub_date':
 			case 'createdon':
 			case 'editedon':
-				$field .= '<tr' . $row_style . '>
-                <td>' . $title . '' . $help . '</td>
-                <td><input id="' . $name . '" ' . $mx_can_pub . 'name="' . $name . '" class="DatePicker" value="' . ($content[$name] == "0" || !isset($content[$name]) ? '' : $modx->toDateFormat($content[$name])) . '" onBlur="documentDirty=true;" />
-                <a href="javascript:void(0);" onClick="javascript:document.mutate.' . $name . '.value=\'\'; return true;" onMouseOver="window.status=\'' . $_lang['remove_date'] . '\'; return true;" onMouseOut="window.status=\'\'; return true;" style="cursor:pointer; cursor:hand;">
-                <img src="' . $_style["icons_cal_nodate"] . '" width="16" height="16" border="0" alt="' . $_lang['remove_date'] . '" /></a>
-				</td></tr>
-				<tr' . $row_style . '>
-					<td></td>
-					<td style="color: #555;font-size:10px"><em>' . $modx->config['datetime_format'] . ' HH:MM:SS</em></td>
-				</tr>';
+				$field .= '
+				<div class="input-group">
+					<input id="' . $name . '" class="form-control DatePicker" name="' . $name . '" value="' . ($content[$name] == "0" || !isset($content[$name]) ? '' : $modx->toDateFormat($content[$name])) . '" onBlur="documentDirty=true;" placeholder="' . $modx->config['datetime_format'] . ' HH:MM:SS" ' . $mx_can_pub . ' />
+					<span class="input-group-addon">
+						<a class="text-danger" href="javascript:;" onclick="document.mutate.' . $name . '.value=\'\'; return true;" onmouseover="window.status=\'' . $_lang['remove_date'] . '\'; return true;">
+							<i class="' . $_style["actions_calendar_delete"] . '" title="' . $_lang['remove_date'] . '"></i>
+						</a>
+					</span>
+				</div>
+				';
 				break;
 			case 'richtext':
 			case 'donthit':
@@ -276,7 +246,7 @@ function renderContentField($name, $data, $showTvImage) {
 			case 'hidemenu':
 				if($name == 'richtext') {
 					$value = $content[$name] == 0 && $_REQUEST['a'] == '27' ? 0 : 1;
-					$checked = $value ? "checked" : '';					
+					$checked = $value ? "checked" : '';
 				} elseif($name == 'donthit' || $name == 'hidemenu') {
 					$value = ($content[$name] == 0) ? 0 : 1;
 					$checked = !$value ? "checked" : '';
@@ -299,21 +269,19 @@ function renderContentField($name, $data, $showTvImage) {
 					$value = ($content[$name] == 1) ? 1 : 0;
 					$checked = $value ? "checked" : '';
 				}
-				$field .= '<tr' . $row_style . '>
-                <td width="' . $title_width . '">' . $title . '' . $help . '</td>
-                <td><input name="' . $name . 'check" type="checkbox" class="checkbox" ' . $checked . ' onClick="changestate(document.mutate.' . $name . ');" />
+				$field .= '
+				<input id="' . $name . '" class="form-checkbox" name="' . $name . 'check" type="checkbox" ' . $checked . ' onClick="changestate(document.mutate.' . $name . ');" />
                 <input type="hidden" name="' . $name . '" value="' . $value . '" onChange="documentDirty=true;" />
-				</td></tr>';
+				';
 				break;
 			case 'type':
 				if($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInternalKey'] == $content['createdby']) {
-					$field .= '<tr' . $row_style . '>
-				    <td width="' . $title_width . '">' . $title . '' . $help . '</td>
-					<td><select name="type" class="inputBox" onChange="documentDirty=true;">
-					<option value="document"' . (($content['type'] == "document" || $_REQUEST['a'] == '85' || $_REQUEST['a'] == '4') ? ' selected="selected"' : "") . '>' . $_lang["resource_type_webpage"] . '</option>
-					<option value="reference"' . (($content['type'] == "reference" || $_REQUEST['a'] == '72') ? ' selected="selected"' : "") . '>' . $_lang["resource_type_weblink"] . '</option>
+					$field .= '
+					<select id="type" class="form-control" name="type" onChange="documentDirty=true;">
+						<option value="document"' . (($content['type'] == "document" || $_REQUEST['a'] == '85' || $_REQUEST['a'] == '4') ? ' selected="selected"' : "") . '>' . $_lang["resource_type_webpage"] . '</option>
+						<option value="reference"' . (($content['type'] == "reference" || $_REQUEST['a'] == '72') ? ' selected="selected"' : "") . '>' . $_lang["resource_type_weblink"] . '</option>
 					</select>
-					</td></tr>';
+					';
 				} else {
 					if($content['type'] != 'reference' && $_REQUEST['a'] != '72') {
 						$field .= '<input type="hidden" name="type" value="document" />';
@@ -324,9 +292,8 @@ function renderContentField($name, $data, $showTvImage) {
 				break;
 			case 'contentType':
 				if($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInternalKey'] == $content['createdby']) {
-					$field .= '<tr' . $row_style . '>
-					<td width="' . $title_width . '">' . $title . '' . $help . '</td>
-					<td><select name="contentType" class="inputBox" onChange="documentDirty=true;">';
+					$field .= '
+					<select id="contentType" class="form-control" name="contentType" onChange="documentDirty=true;">';
 					if(!$content['contentType']) {
 						$content['contentType'] = 'text/html';
 					}
@@ -336,7 +303,7 @@ function renderContentField($name, $data, $showTvImage) {
 						$field .= '<option value="' . $ct[$i] . '"' . ($content['contentType'] == $ct[$i] ? ' selected="selected"' : '') . '>' . $ct[$i] . "</option>";
 					}
 					$field .= '</select>
-					</td></tr>';
+					';
 				} else {
 					if($content['type'] != 'reference' && $_REQUEST['a'] != '72') {
 						$field .= '<input type="hidden" name="contentType" value="' . (isset($content['contentType']) ? $content['contentType'] : "text/html") . '" />';
@@ -347,13 +314,12 @@ function renderContentField($name, $data, $showTvImage) {
 				break;
 			case 'content_dispo':
 				if($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInternalKey'] == $content['createdby']) {
-					$field .= '<tr' . $row_style . '>
-				        <td width="' . $title_width . '">' . $title . '' . $help . '</td>
-						<td><select name="content_dispo" size="1" onChange="documentDirty=true;" class="inputBox">
+					$field .= '
+					<select id="content_dispo" class="form-control" name="content_dispo" onChange="documentDirty=true;">
 						<option value="0"' . (!$content['content_dispo'] ? ' selected="selected"' : '') . '>' . $_lang['inline'] . '</option>
 						<option value="1"' . ($content['content_dispo'] == 1 ? ' selected="selected"' : '') . '>' . $_lang['attachment'] . '</option>
-						</select>
-						</td></tr>';
+					</select>
+					';
 				} else {
 					if($content['type'] != 'reference' && $_REQUEST['a'] != '72') {
 						$field .= '<input type="hidden" name="content_dispo" value="' . (isset($content['content_dispo']) ? $content['content_dispo'] : '0') . '" />';
@@ -361,13 +327,53 @@ function renderContentField($name, $data, $showTvImage) {
 				}
 				break;
 			default:
-				$field .= '<tr' . $row_style . '>';
-				$field .= $data['field']['title'] ? '<td width="' . $title_width . '">' . $title . '' . $help . '</td><td>' : '<td colspan="2">';
-				$field .= '<input name="' . $name . '" type="text" maxlength="255" value="' . $modx->htmlspecialchars(stripslashes($content[$name])) . '" class="inputBox" onChange="documentDirty=true;" spellcheck="true" />
-				</td></tr>';
+				$field .= '
+				<input id="' . $name . '" class="form-control' . ($name == 'pagetitle' ? ' form-control-lg' : '') . '" name="' . $name . '" type="text" maxlength="255" value="' . $modx->htmlspecialchars(stripslashes($content[$name])) . '" onChange="documentDirty=true;" spellcheck="true" />';
 		}
 	}
-	return $field;
+
+	$out = '';
+	if(!empty($field)) {
+		if($name == 'content' || $name == 'introtext') {
+			$out .= '<div class="row form-group"' . $row_style . '>';
+			if(!empty($data['field']['title'])) {
+				$out .= '<div class="navbar navbar-editor">' . $title . $help;
+				//				if($name == 'content') {
+				//					$out .= '
+				//						<label class="float-xs-right">' . $_lang['which_editor_title'] . '
+				//							<select id="which_editor" class="form-control form-control-sm" size="1" name="which_editor" onchange="changeRTE();">
+				//							<option value="none">' . $_lang['none'] . '</option>';
+				//								// invoke OnRichTextEditorRegister event
+				//								$evtOut = $modx->invokeEvent("OnRichTextEditorRegister");
+				//								if(is_array($evtOut)) {
+				//									for($i = 0; $i < count($evtOut); $i++) {
+				//										$editor = $evtOut[$i];
+				//										$out .= '<option value="' . $editor . '"' . ($modx->config['which_editor'] == $editor ? ' selected="selected"' : '') . '>' . $editor . '</option>';
+				//									}
+				//								}
+				//					$out .= '
+				//							</select>
+				//						</label>
+				//					';
+				//				}
+				$out .= '</div>';
+			}
+			$out .= '<div class="section-editor clearfix">';
+		} else {
+			$out .= '<div class="row form-row"' . $row_style . '>';
+			if(!empty($data['field']['title']) || !empty($data['tv']['caption'])) {
+				$out .= '<div class="col-md-3 col-lg-2">' . $title . $help . '</div>';
+				$out .= '<div class="col-md-9 col-lg-10">';
+			} else {
+				$out .= '<div class="col-sx-12">';
+			}
+		}
+		$out .= $field;
+		$out .= '</div>';
+		$out .= '</div>';
+	}
+
+	return $out;
 }
 
 /////////////////
@@ -405,8 +411,7 @@ $mutate_content_fields = array(
 			),
 			'parent' => array(
 				'field' => array(
-					'title' => 'Родительская категория'
-					/*$_lang['resource_parent']*/,
+					'title' => $_lang['resource_parent'],
 					'help' => $_lang['resource_parent_help'],
 					'roles' => '',
 					'hide' => ''
@@ -443,33 +448,17 @@ $mutate_content_fields = array(
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'split_introtext' => array(
-				'split' => array(
-					'title' => '<strong>Краткое описание</strong>',
-					'roles' => '',
-					'hide' => ''
-				)
-			),
 			'introtext' => array(
 				'field' => array(
-					'title' => ''
-					/*$_lang['resource_summary']*/,
-					'help' => ''
-					/*$_lang['resource_summary_help']*/,
-					'roles' => '',
-					'hide' => ''
-				)
-			),
-			'split_content' => array(
-				'split' => array(
-					'title' => '<strong>Подробное описание</strong>',
+					'title' => $_lang['resource_summary'],
+					'help' => $_lang['resource_summary_help'],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
 			'content' => array(
 				'field' => array(
-					'title' => $_lang['which_editor_title'],
+					'title' => $_lang['resource_content'],
 					'help' => '',
 					'roles' => '',
 					'hide' => ''
@@ -492,8 +481,7 @@ $mutate_content_fields = array(
 		'fields' => array(
 			'alias' => array(
 				'field' => array(
-					'title' => 'URL'
-					/*$_lang['resource_alias']*/,
+					'title' => $_lang['resource_alias'],
 					'help' => $_lang['resource_alias_help'],
 					'roles' => '',
 					'hide' => ''
@@ -564,10 +552,8 @@ $mutate_content_fields = array(
 			),
 			'donthit' => array(
 				'field' => array(
-					'title' => 'Дочерние ресурсы отображаются в дереве'
-					/*$_lang['track_visitors_title']*/,
-					'help' => 'Это поле используется для папок с большим числом вложенных страниц'
-					/*$_lang['resource_opt_trackvisit_help']*/,
+					'title' => $_lang['track_visitors_title'],
+					'help' => $_lang['resource_opt_trackvisit_help'],
 					'roles' => '',
 					'hide' => ''
 				)
@@ -614,16 +600,16 @@ $mutate_content_fields = array(
 			),
 			'createdon' => array(
 				'field' => array(
-					'title' => 'Дата создания',
-					'help' => 'Дата создания ресурса',
+					'title' => $_lang["createdon"],
+					'help' => $_lang["createdon"],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
 			'editedon' => array(
 				'field' => array(
-					'title' => 'Дата редактирования',
-					'help' => 'Дата последнего редактирования ресурса',
+					'title' => $_lang["editedon"],
+					'help' => $_lang["editedon"],
 					'roles' => '',
 					'hide' => ''
 				)
@@ -661,8 +647,7 @@ $render_template_default = $modx->runSnippet('mutate_content_template_default');
 
 if($render_template) {
 	$mutate_content_fields = $render_template;
-}
-if(!$render_template && $render_template_default) {
+} else if($render_template_default) {
 	$mutate_content_fields = $render_template_default;
 }
 
@@ -689,19 +674,17 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					// Add richtext editor to the list
 					$replace_richtexteditor = is_array($replace_richtexteditor) ? array_merge($replace_richtexteditor, array("tv" . $row['id'])) : array("tv" . $row['id']);
 					$richtexteditorIds[$which_editor] = is_array($richtexteditorIds[$which_editor]) ? array_merge($richtexteditorIds[$which_editor], array("tv" . $row['id'])) : array("tv" . $row['id']);
-					$richtexteditorOptions[$which_editor]["tv" . $row['id']] = '';				
+					$richtexteditorOptions[$which_editor]["tv" . $row['id']] = '';
 				}
-				
+
 				foreach($mutate_content_fields as $k => $v) {
 					if(isset($v['fields']['tv' . $row['id']])) {
 						$position = array_search('tv' . $row['id'], array_keys($v['fields']));
-						$mutate_content_fields[$k]['fields'] = array_slice($mutate_content_fields[$k]['fields'], 0, $position, true) +
-							array($row['name'] => $v['fields']['tv' . $row['id']]) +
-							array_slice($mutate_content_fields[$k]['fields'], $position, count($mutate_content_fields[$k]['fields']), true);
+						$mutate_content_fields[$k]['fields'] = array_slice($mutate_content_fields[$k]['fields'], 0, $position, true) + array($row['name'] => $v['fields']['tv' . $row['id']]) + array_slice($mutate_content_fields[$k]['fields'], $position, count($mutate_content_fields[$k]['fields']), true);
 						unset($mutate_content_fields[$k]['fields']['tv' . $row['id']]);
 					}
 				}
-				
+
 				foreach($mutate_content_fields as $k => $v) {
 					if(isset($v['fields'][$row['name']])) {
 						$mutate_content_fields[$k]['fields'][$row['name']] = array(
@@ -730,16 +713,11 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 	}
 	// end Variables
 
-
 	$output = '';
 	$output .= "\n\n\t" . '<!------ templatesEdit ------->' . "\n\t";
 	$output .= '<style>
-	form#mutate .tab-page .inputBox, form#mutate .tab-page input[name="ta"].inputBox { width: 100% }
-	form#mutate .tab-page>table>tr>td, form#mutate .tab-page>table>tbody>tr>td { position: relative }
-	form#mutate .tab-page span.warning { display: inline-block; padding-right: 16px }
-	form#mutate .tab-page span.warning + img { position: absolute; right: 0; top: 50%; margin-top: -8px; height: 16px; opacity: 0.3; transition: opacity 0.3s; transform: translateZ(0) }
-	form#mutate .tab-page span.warning + img:hover { opacity: 1 }
-	form#mutate .tab-page input[name="menuindex"].inputBox { width: 60px !important }
+	.warning + [data-tooltip].fa-question-circle { margin: 0.3rem 0.5rem 0; }
+	input[name*=date] + .input-group-addon, input[name=createdon] + .input-group-addon, input[name=editedon] + .input-group-addon, input[name=menuindex] + .input-group-addon { float: left; width: auto }
 	</style>';
 
 	foreach($mutate_content_fields as $tabName => $tab) {
@@ -785,7 +763,8 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					$output .= '<h2 class="tab">' . $tab['title'] . '</h2>
 								<script type="text/javascript">tpSettings.addTabPage(document.getElementById("tab' . $tabName . '"));</script>';
 				}
-				$output .= '<table width="100%" border="0" cellspacing="0" cellpadding="0">' . $tabContent . '</table>
+				$output .= $tabContent;
+				$output .= '
 					</div><!-- end #tab' . $tabName . ' -->';
 			}
 		}
@@ -813,7 +792,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 					img.src = "' . MODX_SITE_URL . '" + el.value;
 					img.onerror = function() {
 						this.parentElement.style.display = "none";
-					}
+					}     
 					img.onload = function() {
 						this.parentElement.style.display = "block";
 					}
@@ -824,11 +803,6 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 		}
 		</script>';
 	}
-/*	if($_REQUEST['id']) {
-		$output .= '<script type="text/javascript">
-		jQuery("h1.pagetitle .pagetitle-text").html("' . $content['pagetitle'] . ' <small>('. $_REQUEST['id'].')</small>")
-		</script>';
-	}*/
 
 	$output .= '<!------ /templatesEdit/ ------->' . "\n\t";
 	unset($mutate_content_fields);
