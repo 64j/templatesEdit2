@@ -503,7 +503,7 @@ $mutate_content_fields = array(
 					'hide' => ''
 				)
 			),
-			'menusort' => array(
+			'menuindex' => array(
 				'field' => array(
 					'title' => $_lang['resource_opt_menu_index'],
 					'help' => $_lang['resource_opt_menu_index_help'],
