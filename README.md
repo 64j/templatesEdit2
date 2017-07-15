@@ -11,6 +11,11 @@ templatesEdit2
 <pre>&showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;</pre>
 <br>
 <br>
+
+<h6>UPD: 16.07.2017</h6>
+<p>Изменение под EVO 1.3</p>
+<p>Убран из массива menusort, заменён на menuindex</p>
+<br>
 <h6><a id="user-content-upd-29122015" class="anchor" href="#upd-29122015" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>UPD: 29.12.2015</strong></h6>
 <p>1. Изменения в функции показа картинок.</p>
 <p>2. Нововведение. Для полей TV с типом <strong>Text</strong> и <strong>Number</strong>, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
@@ -51,9 +56,8 @@ if($modx-&gt;db-&gt;getRecordCount($sql) &gt; 0) {
 return $mutate_content;</pre>
 
 
-
 <h6>UPD: 7.11.2014</h6>
-<p>Возможность разделения полей hidemenu и menuindex, для вывода отдельно menuindex - использовать menusort</p>
+<p><del>Возможность разделения полей hidemenu и menuindex, для вывода отдельно menuindex - использовать menusort</del></p>
 <h6>UPD: 7.11.2014</h6>
 <p>добавленна возможность показа TV с типом image<br>
 обязательно добавить в конфигурацию плагина - &showTvImage=Show TV image;list;yes,no;yes</p>
