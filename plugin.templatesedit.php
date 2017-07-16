@@ -25,7 +25,6 @@ function strClean($str) {
 
 function renderTypeImage($value, $tvid, $width) {
 	$src = $value ? MODX_SITE_URL . $value : '';
-	$width = $width / 2;
 	$out = '<script type="text/javascript">
 	var tvImageInput_' . $tvid . ' = document.getElementById("tv' . $tvid . '");
 	tvImageInput_' . $tvid . '.onkeyup = tvImageInput_' . $tvid . '.oncut = tvImageInput_' . $tvid . '.oninput = function() {
@@ -34,7 +33,7 @@ function renderTypeImage($value, $tvid, $width) {
 		renderTvImageCheck(this.id);
 	}
 	</script>';
-	$out .= '<div class="image_for_tv" style="' . (!$value ? 'display:none; ' : '') . 'max-width: ' . $width . 'px; max-height: ' . $width . 'px; line-height: ' . $width . 'px; padding: 8px; margin: 2px 2px 0 0; border: 1px #ccc solid; background-color: #fff; text-align: center;"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')" style="display: inline-block; vertical-align: middle; max-width: ' . $width . 'px;max-height: ' . $width . 'px; cursor: pointer;" /></div>';
+	$out .= '<div class="image_for_tv" style="' . (!$value ? 'display:none; ' : '') . 'width: ' . $width . 'px; height: ' . $width . 'px; line-height: ' . ($width - 15) . 'px; padding: 5px; margin: .1rem .1rem 0 0; border: 1px #ccc solid; background-color: #fff; text-align: center;"><img id="image_for_tv' . $tvid . '" src="' . $src . '" onclick="BrowseServer(\'tv' . $tvid . '\')" style="display: inline-block; vertical-align: middle; max-height: 100%; max-width: 100%; cursor: pointer;" /></div>';
 	return $out;
 }
 
