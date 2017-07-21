@@ -12,10 +12,33 @@ templatesEdit2
 <br>
 <br>
 
+<h6>UPD: 21.07.2017</h6>
+<p>Добавлена возможность подключать файлы шаблонов из папки configs</p>
+<p>
+в папке с плагином нужно создать папку configs и в неё можно складывать все конфигурационные файлы<br>
+Код файлов следующий
+</p>
+
+```php
+<?php
+global $_lang;
+
+$mutate_content_fields = array(
+
+....................
+
+);
+
+return $mutate_content_fields;
+```
+
+<br>
+
 <h6>UPD: 16.07.2017</h6>
 <p>Изменение под EVO 1.3</p>
 <p>Убран из массива menusort, заменён на menuindex</p>
 <br>
+
 <h6><a id="user-content-upd-29122015" class="anchor" href="#upd-29122015" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>UPD: 29.12.2015</strong></h6>
 <p>1. Изменения в функции показа картинок.</p>
 <p>2. Нововведение. Для полей TV с типом <strong>Text</strong> и <strong>Number</strong>, теперь при заполнении возможных значений, они показываются подсказками при вводе данных полей в админке.</p>
