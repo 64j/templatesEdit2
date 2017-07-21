@@ -357,7 +357,7 @@ function renderContentField($name, $data, $showTvImage) {
 				//				}
 				$out .= '</div>';
 			}
-			$out .= '<div class="section-editor clearfix">';
+			$out .= '<div class="container">';
 		} else {
 			$out .= '<div class="row form-row"' . $row_style . '>';
 			if(!empty($data['field']['title']) || !empty($data['tv']['caption'])) {
@@ -643,6 +643,12 @@ $mutate_content_fields = array(
 
 $render_template = $modx->runSnippet('mutate_content_template_' . $template);
 $render_template_default = $modx->runSnippet('mutate_content_template_default');
+if(file_exists(MODX_BASE_PATH . 'assets/plugins/templatesedit/configs/template_default.php')) {
+	include_once MODX_BASE_PATH . 'assets/plugins/templatesedit/configs/template_default.php';
+}
+if(file_exists(MODX_BASE_PATH . 'assets/plugins/templatesedit/configs/template_' . $template . '.php')) {
+	include_once MODX_BASE_PATH . 'assets/plugins/templatesedit/configs/template_' . $template . '.php';
+}
 
 if($render_template) {
 	$mutate_content_fields = $render_template;
@@ -730,7 +736,7 @@ if($modx->Event->name == 'OnDocFormTemplateRender') {
 				if($fieldName == 'richtext' && ($content['type'] == 'reference' || $_REQUEST['a'] == '72')) {
 					$field['field']['hide'] = 1;
 				}
-				if($field['split']) {
+				if(!empty($field['split'])) {
 					$tabContent .= '<tr><td colspan="2"><h4><strong class="warning">' . $field['split']['title'] . '</strong></h4></td></tr>';
 					$counter++;
 					$split_counter++;
