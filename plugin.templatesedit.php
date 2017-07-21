@@ -216,7 +216,7 @@ function renderContentField($name, $data, $showTvImage) {
 				break;
 			case 'published':
 				$field .= '
-				<input id="published" class="form-checkbox" name="publishedcheck" type="checkbox" ' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? "checked" : '') . ' onClick="changestate(document.mutate.published);" ' . $mx_can_pub . ' />
+				<input id="publishedcheck" class="form-checkbox" name="publishedcheck" type="checkbox" ' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? "checked" : '') . ' onClick="changestate(document.mutate.published);" ' . $mx_can_pub . ' />
                 <input type="hidden" name="published" value="' . ((isset($content['published']) && $content['published'] == 1) || (!isset($content['published']) && $publish_default == 1) ? 1 : 0) . '" />
 				';
 				break;
@@ -269,7 +269,7 @@ function renderContentField($name, $data, $showTvImage) {
 					$checked = $value ? "checked" : '';
 				}
 				$field .= '
-				<input id="' . $name . '" class="form-checkbox" name="' . $name . 'check" type="checkbox" ' . $checked . ' onClick="changestate(document.mutate.' . $name . ');" />
+				<input id="' . $name . 'check" class="form-checkbox" name="' . $name . 'check" type="checkbox" ' . $checked . ' onClick="changestate(document.mutate.' . $name . ');" />
                 <input type="hidden" name="' . $name . '" value="' . $value . '" onChange="documentDirty=true;" />
 				';
 				break;
