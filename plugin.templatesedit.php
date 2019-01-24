@@ -91,6 +91,7 @@ function renderContentField(
         if ($data['tv']['type'] == 'richtext' || $data['tv']['type'] == 'htmlarea') {
             // determine TV-options
             $tvOptions = $modx->parseProperties($data['tv']['elements']);
+            $editor = $modx->config['which_editor'];
             if (!empty($tvOptions)) {
                 // Allow different Editor with TV-option {"editor":"CKEditor4"} or &editor=Editor;text;CKEditor4
                 $editor = isset($tvOptions['editor']) ? $tvOptions['editor'] : $modx->config['which_editor'];
