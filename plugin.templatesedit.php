@@ -5,7 +5,7 @@
  * render fields and tabs in edit docs
  *
  * @category         plugin
- * @version          2.4
+ * @version          2.4.1
  * @license          http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @package          modx
  * @internal         @events OnDocFormTemplateRender
@@ -22,11 +22,6 @@ if (!defined('MODX_BASE_PATH')) {
 }
 
 global $_lang, $content, $docgrp, $which_editor, $editor, $richtexteditorIds, $richtexteditorOptions;
-
-function strClean($str)
-{
-    return htmlspecialchars($str, ENT_QUOTES);
-}
 
 function renderTypeImage(
     $value,
@@ -51,6 +46,8 @@ function renderContentField(
 ) {
     global $modx, $_style, $_lang, $content, $site_name, $use_editor, $which_editor, $editor, $richtexteditorIds, $richtexteditorOptions, $search_default, $publish_default, $cache_default, $closeOptGroup, $custom_contenttype;
     $field = '';
+    $title = '';
+    $help = '';
     list($item_title, $item_description) = explode('||||', $data['field']['title']);
     $fieldDescription = (!empty($item_description)) ? '<br><span class="comment">' . $item_description . '</span>' : '';
     $hide = $data['field']['hide'] || $data['tv']['hide'] ? true : false;
@@ -151,6 +148,7 @@ function renderContentField(
                         $modx->getFullTableName('site_templates') . " AS t LEFT JOIN " . $modx->getFullTableName('categories') . " AS c ON t.category = c.id",
                         '', 'c.category, t.templatename ASC');
                     $currentCategory = '';
+                    $thisCategory = '';
                     while ($row = $modx->db->getRow($rs)) {
                         $thisCategory = $row['category'];
                         if ($thisCategory == null) {
@@ -204,26 +202,14 @@ function renderContentField(
                     break;
                 case 'parent':
                     $parentlookup = false;
-                    if (isset($_REQUEST['id'])) {
-                        if ($content['parent'] == 0) {
-                            $parentname = $site_name;
-                        } else {
-                            $parentlookup = $content['parent'];
-                        }
-                    } elseif (isset($_REQUEST['pid'])) {
-                        if ($_REQUEST['pid'] == 0) {
-                            $parentname = $site_name;
-                        } else {
-                            $parentlookup = $_REQUEST['pid'];
-                        }
-                    } elseif (isset($_POST['parent'])) {
-                        if ($_POST['parent'] == 0) {
-                            $parentname = $site_name;
-                        } else {
-                            $parentlookup = $_POST['parent'];
-                        }
+                    $parentname = $site_name;
+                    if (!empty($_REQUEST['id']) && !empty($content['parent'])) {
+                        $parentlookup = $content['parent'];
+                    } elseif (!empty($_REQUEST['pid'])) {
+                        $parentlookup = $_REQUEST['pid'];
+                    } elseif (!empty($_POST['parent'])) {
+                        $parentlookup = $_POST['parent'];
                     } else {
-                        $parentname = $site_name;
                         $content['parent'] = 0;
                     }
                     if ($parentlookup !== false && is_numeric($parentlookup)) {
@@ -536,7 +522,7 @@ $mutate_content_fields = array(
             'link_attributes' => array(
                 'field' => array(
                     'title' => $_lang['link_attributes'],
-                    'help' => strClean($_lang['link_attributes_help']),
+                    'help' => htmlspecialchars($_lang['link_attributes_help'], ENT_QUOTES),
                     'roles' => '',
                     'hide' => ''
                 )
@@ -703,17 +689,14 @@ if ($modx->Event->name == 'OnDocFormTemplateRender') {
     // Variables
     if (($content['type'] == 'document' || $_REQUEST['a'] == '4') || ($content['type'] == 'reference' || $_REQUEST['a'] == 72)) {
         $rs = $modx->db->select("
-				DISTINCT tv.*, IF(tvc.value!='',tvc.value,tv.default_text) as value",
-            "" . $modx->getFullTableName('site_tmplvars') . " AS tv
-				INNER JOIN " . $modx->getFullTableName('site_tmplvar_templates') . " AS tvtpl ON tvtpl.tmplvarid = tv.id
-				LEFT JOIN " . $modx->getFullTableName('site_tmplvar_contentvalues') . " AS tvc ON tvc.tmplvarid=tv.id AND tvc.contentid='" . $id . "'
-				LEFT JOIN " . $modx->getFullTableName('site_tmplvar_access') . " AS tva ON tva.tmplvarid=tv.id",
-            "tvtpl.templateid='" . $template . "' 
-				AND (1='" . $_SESSION['mgrRole'] . "' 
-				OR ISNULL(tva.documentgroup)" . (!$docgrp ? '' : " OR tva.documentgroup IN (" . $docgrp . ")") . ")",
+        DISTINCT tv.*, IF(tvc.value!='',tvc.value,tv.default_text) as value", $modx->getFullTableName('site_tmplvars') . " AS tv
+        INNER JOIN " . $modx->getFullTableName('site_tmplvar_templates') . " AS tvtpl ON tvtpl.tmplvarid = tv.id
+		LEFT JOIN " . $modx->getFullTableName('site_tmplvar_contentvalues') . " AS tvc ON tvc.tmplvarid=tv.id AND tvc.contentid='" . $id . "'
+		LEFT JOIN " . $modx->getFullTableName('site_tmplvar_access') . " AS tva ON tva.tmplvarid=tv.id",
+            "tvtpl.templateid='" . $template . "' AND (1='" . $_SESSION['mgrRole'] . "' 
+		OR ISNULL(tva.documentgroup)" . (!$docgrp ? '' : " OR tva.documentgroup IN (" . $docgrp . ")") . ")",
             'tvtpl.rank, tv.rank, tv.id');
-        $limit = $modx->db->getRecordCount($rs);
-        if ($limit > 0) {
+        if ($modx->db->getRecordCount($rs)) {
             require_once(MODX_MANAGER_PATH . 'includes/tmplvars.inc.php');
             require_once(MODX_MANAGER_PATH . 'includes/tmplvars.commands.inc.php');
             $i = 0;
@@ -838,5 +821,5 @@ if ($modx->Event->name == 'OnDocFormTemplateRender') {
 
     $output .= '<!------ /templatesEdit/ ------->' . "\n\t";
     unset($mutate_content_fields);
-    $modx->Event->output($output);
+    $modx->Event->addOutput($output);
 }

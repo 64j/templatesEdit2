@@ -78,6 +78,14 @@ $render_template = array(
         'roles' => '',
         'hide' => '',
         'fields' => array(
+            'introtext' => array(
+                'field' => array(
+                    'title' => $_lang['resource_summary'],
+                    'help' => $_lang['resource_summary_help'],
+                    'roles' => '',
+                    'hide' => ''
+                )
+            ),
             'content' => array(
                 'field' => array(
                     'title' => $_lang['resource_content'],
@@ -94,14 +102,6 @@ $render_template = array(
                     'hide' => ''
                 )
             ),
-            'introtext' => array(
-                'field' => array(
-                    'title' => $_lang['resource_summary'],
-                    'help' => $_lang['resource_summary_help'],
-                    'roles' => '',
-                    'hide' => ''
-                )
-            )
         )
     ),
     'Seo' => array(
@@ -126,7 +126,7 @@ $render_template = array(
             'link_attributes' => array(
                 'field' => array(
                     'title' => $_lang['link_attributes'],
-                    'help' => strClean($_lang['link_attributes_help']),
+                    'help' => htmlspecialchars($_lang['link_attributes_help'], ENT_QUOTES),
                     'roles' => '',
                     'hide' => ''
                 )
@@ -273,5 +273,3 @@ $render_template = array(
         )
     )
 );
-
-return $render_template;

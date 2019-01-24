@@ -4,7 +4,7 @@
  * Кастомизация полей при редактировании документов
  *
  * @category    plugin
- * @version     2.4
+ * @version     2.4.1
  * @package     evo
  * @internal    @properties &showTvImage=Показывать картинки в TV;list;yes,no;yes &excludeTvCategory=Исключить TV из категорий;text;
  * @internal    @events OnDocFormTemplateRender
