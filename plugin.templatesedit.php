@@ -5,7 +5,7 @@
  * render fields and tabs in edit docs
  *
  * @category         plugin
- * @version          2.4.1
+ * @version          2.5
  * @license          http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @package          modx
  * @internal         @events OnDocFormTemplateRender
@@ -362,24 +362,24 @@ function renderContentField(
             $out .= '<div class="row form-group"' . $row_style . '>';
             if (!empty($data['field']['title'])) {
                 $out .= '<div class="navbar navbar-editor">' . $title . $help;
-                //				if($name == 'content') {
-                //					$out .= '
-                //						<label class="float-xs-right">' . $_lang['which_editor_title'] . '
-                //							<select id="which_editor" class="form-control form-control-sm" size="1" name="which_editor" onchange="changeRTE();">
-                //							<option value="none">' . $_lang['none'] . '</option>';
-                //								// invoke OnRichTextEditorRegister event
-                //								$evtOut = $modx->invokeEvent("OnRichTextEditorRegister");
-                //								if(is_array($evtOut)) {
-                //									for($i = 0; $i < count($evtOut); $i++) {
-                //										$editor = $evtOut[$i];
-                //										$out .= '<option value="' . $editor . '"' . ($modx->config['which_editor'] == $editor ? ' selected="selected"' : '') . '>' . $editor . '</option>';
-                //									}
-                //								}
-                //					$out .= '
-                //							</select>
-                //						</label>
-                //					';
-                //				}
+                if ($name == 'content') {
+                    $out .= '
+                    <label class="float-xs-right">' . $_lang['which_editor_title'] . '
+                        <select id="which_editor" class="form-control form-control-sm" size="1" name="which_editor" onchange="changeRTE();">
+                        <option value="none">' . $_lang['none'] . '</option>';
+                    // invoke OnRichTextEditorRegister event
+                    $evtOut = $modx->invokeEvent("OnRichTextEditorRegister");
+                    if (is_array($evtOut)) {
+                        for ($i = 0; $i < count($evtOut); $i++) {
+                            $editor = $evtOut[$i];
+                            $out .= '<option value="' . $editor . '"' . ($modx->config['which_editor'] == $editor ? ' selected="selected"' : '') . '>' . $editor . '</option>';
+                        }
+                    }
+                    $out .= '
+                        </select>
+                    </label>
+                ';
+                }
                 $out .= '</div>';
             }
             $out .= '<div class="container">';
@@ -821,5 +821,5 @@ if ($modx->Event->name == 'OnDocFormTemplateRender') {
 
     $output .= '<!------ /templatesEdit/ ------->' . "\n\t";
     unset($mutate_content_fields);
-    $modx->Event->addOutput($output);
+    $modx->event->addOutput($output);
 }
