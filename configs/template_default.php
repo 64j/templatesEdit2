@@ -1,6 +1,7 @@
 <?php
-global $_lang;
-return array(
+global $_lang, $content;
+
+$render_template = array(
 	'General' => array(
 		'title' => $_lang['settings_general'],
 		'roles' => '',
@@ -22,20 +23,28 @@ return array(
 					'hide' => ''
 				)
 			),
-			'parent' => array(
+            'description' => array(
+                'field' => array(
+                    'title' => $_lang['resource_description'],
+                    'help' => $_lang['resource_description_help'],
+                    'roles' => '',
+                    'hide' => '1'
+                )
+            ),
+			'menutitle' => array(
 				'field' => array(
-					'title' => 'Родительская категория'/*$_lang['resource_parent']*/,
-					'help' => $_lang['resource_parent_help'],
+					'title' => $_lang['resource_opt_menu_title'],
+					'help' => $_lang['resource_opt_menu_title_help'],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
-			'description' => array(
+			'parent' => array(
 				'field' => array(
-					'title' => $_lang['resource_description'],
-					'help' => $_lang['resource_description_help'],
+					'title' => $_lang['resource_parent'],
+					'help' => $_lang['resource_parent_help'],
 					'roles' => '',
-					'hide' => '1'
+					'hide' => ''
 				)
 			),
 			'weblink' => array(
@@ -46,10 +55,10 @@ return array(
 					'hide' => ''
 				)
 			),
-			'link_attributes' => array(
+			'template' => array(
 				'field' => array(
-					'title' => 'Код товара 1С',
-					'help' => '',
+					'title' => $_lang['page_data_template'],
+					'help' => $_lang['page_data_template_help'],
 					'roles' => '',
 					'hide' => ''
 				)
@@ -61,99 +70,95 @@ return array(
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'split_introtext' => array(
-				'split' => array(
-					'title' => 'Краткое описание',
-					'roles' => '',
-					'hide' => ''
-				)
-			),
+            'richtext' => array(
+                'field' => array(
+                    'title' => $_lang['resource_opt_richtext'],
+                    'help' => $_lang['resource_opt_richtext_help'],
+                    'roles' => '',
+                    'hide' => ''
+                )
+            ),
 			'introtext' => array(
 				'field' => array(
-					'title' => ''/*$_lang['resource_summary']*/,
-					'help' => ''/*$_lang['resource_summary_help']*/,
-					'roles' => '',
-					'hide' => ''
-				)
-			),
-			'split_content' => array(
-				'split' => array(
-					'title' => 'Подробное описание',
+					'title' => $_lang['resource_summary'],
+					'help' => $_lang['resource_summary_help'],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
 			'content' => array(
 				'field' => array(
-					'title' => $_lang['which_editor_title'],
+					'title' => $_lang['resource_content'],
 					'help' => '',
 					'roles' => '',
 					'hide' => ''
 				)
 			),
-			'richtext' => array(
-				'field' => array(
-					'title' => $_lang['resource_opt_richtext'],
-					'help' => $_lang['resource_opt_richtext_help'],
-					'roles' => '',
-					'hide' => ''
-				)
-			)		
+			'content-spec' => array(
+                'title' => '',
+                'subtitle' => 'Технические характеристики',
+                'help' => '',
+                'roles' => '',
+                'hide' => ''
+            ),
 		)
 	),
-	'Images' => array(
-		'title' => 'Фотографии',
-		'roles' => '',
-		'hide' => '',
-		'fields' => array(
-			'split_image' => array(
-				'split' => array(
-					'title' => 'Основное изображение',
-					'roles' => '',
-					'hide' => ''
-				)
-			),
-			'image' => array(
-				'tv' => array(
-					'title' => '',
-					'help' => ''
-				)
-			),
-			'split_images' => array(
-				'split' => array(
-					'title' => 'Дополнительные изображения',
-					'roles' => '',
-					'hide' => ''
-				)
-			),
-			'images' => array(
-				'tv' => array(
-					'title' => '',
-					'help' => ''
-				)
-			)	
-		)
-	),
+	'ProductProps' => array(
+	    'title' => 'Свойства товара',
+        'fields' => array(
+            'articul' => array(),
+            'sku' => array(),
+            'currency' => array(),
+            'price' => array(),
+            'price-old' => array(),
+            'material' => array(),
+            'size' => array(),
+            'weight' => array(),
+            'country' => array(),
+            'availability' => array(),
+            'composition' => array(),
+            'brand' => array(),
+            'quantity' => array(),
+            'isNew' => array()
+        )
+    ),
+	'ImagesFiles' => array(
+	    'title' => 'Изображения и файлы',
+        'fields' => array(
+            'icon' => array(),
+            'image' => array(),
+            'images' => array(),
+            'slider' => array(),
+            'images-partners' => array(),
+            'images-certificates' => array(),
+        )
+    ),
+    'Tabs' => array(
+        'title' => 'Табы',
+        'fields' => array(
+            'tabs' => array()
+        )
+    ),
 	'Seo' => array(
 		'title' => 'SEO',
 		'roles' => '',
 		'hide' => '',
 		'fields' => array(
-			'tv_pagetitle' => '',
-			'tv_description' => '',
-			'tv_keywords' => '',
+			'metaTitle' => array(),
+			'metaDescription' => array(),
+			'metaKeywords' => array(),
 			'alias' => array(
 				'field' => array(
-					'title' => 'URL'/*$_lang['resource_alias']*/,
+					'title' => $_lang['resource_alias'],
 					'help' => $_lang['resource_alias_help'],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
-			'menutitle' => array(
+			'link_attributes' => array(
 				'field' => array(
-					'title' => $_lang['resource_opt_menu_title'],
-					'help' => $_lang['resource_opt_menu_title_help'],
+					'title' => $_lang['link_attributes'],
+					'help' => strClean($_lang['link_attributes_help']),
 					'roles' => '',
 					'hide' => ''
 				)
@@ -161,11 +166,22 @@ return array(
 			'menuindex' => array(
 				'field' => array(
 					'title' => $_lang['resource_opt_menu_index'],
-					'help' => '',
+					'help' => $_lang['resource_opt_menu_index_help'],
 					'roles' => '',
 					'hide' => ''
 				)
-			)
+			),
+			'hidemenu' => array(
+				'field' => array(
+					'title' => $_lang['resource_opt_show_menu'],
+					'help' => $_lang['resource_opt_show_menu_help'],
+					'roles' => '',
+					'hide' => ''
+				)
+			),
+            'sitemap_exclude' => array(),
+            'sitemap_priority' => array(),
+            'sitemap_changefreq' => array()
 		)
 	),
 	'Settings' => array(
@@ -199,16 +215,8 @@ return array(
 			),
 			'donthit' => array(
 				'field' => array(
-					'title' => 'Дочерние ресурсы отображаются в дереве'/*$_lang['track_visitors_title']*/,
-					'help' => 'Это поле используется для папок с большим числом вложенных страниц'/*$_lang['resource_opt_trackvisit_help']*/,
-					'roles' => '',
-					'hide' => ''
-				)
-			),
-			'template' => array(
-				'field' => array(
-					'title' => $_lang['page_data_template'],
-					'help' => $_lang['page_data_template_help'],
+					'title' => $_lang['track_visitors_title'],
+					'help' => $_lang['resource_opt_trackvisit_help'],
 					'roles' => '',
 					'hide' => ''
 				)
@@ -255,16 +263,16 @@ return array(
 			),
 			'createdon' => array(
 				'field' => array(
-					'title' => 'Дата создания',
-					'help' => 'Дата создания ресурса',
+					'title' => $_lang["createdon"],
+					'help' => $_lang["createdon"],
 					'roles' => '',
 					'hide' => ''
 				)
 			),
 			'editedon' => array(
 				'field' => array(
-					'title' => 'Дата редактирования',
-					'help' => 'Дата последнего редактирования ресурса',
+					'title' => $_lang["editedon"],
+					'help' => $_lang["editedon"],
 					'roles' => '',
 					'hide' => ''
 				)
@@ -296,4 +304,16 @@ return array(
 		)
 	)
 );
-?>
+
+//$render_template['General']['fields']['description']['field']['hide'] = 0;
+
+//if ($content['template'] == 8) {
+//    $render_template['General']['fields']['description']['field']['hide'] = 0;
+//}
+
+//$parent = isset($_REQUEST['pid']) ? $_REQUEST['pid'] : $content['parent'];
+//if ($parent == 10) {
+//    $render_template['General']['fields']['description']['field']['hide'] = 0;
+//}
+
+return $render_template;
