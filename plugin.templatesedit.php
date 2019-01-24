@@ -17,6 +17,10 @@
  * @lastupdate       27/07/2017
  */
 
+if (!defined('MODX_BASE_PATH')) {
+    die('What are you doing? Get out of here!');
+}
+
 global $_lang, $content, $docgrp, $which_editor, $replace_richtexteditor, $richtexteditorIds, $richtexteditorOptions;
 
 function strClean($str) {
