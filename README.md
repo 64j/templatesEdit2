@@ -2,6 +2,8 @@ templatesEdit2
 ==============
 <h2>[EVO] templatesEdit2 — плагин для изменения вида документов в админ панели MODX</h2>
 
+! Это устаревшая версия плагина. Используйте templatesEdit3 https://github.com/64j/templatesedit3
+
 Картинки на можно посмотреть на <a href="http://wexar.ru/evo-templatesedit2.html" target="_blank"> нашем сайте</a><br>
 <h4>Быстрая установка для сборок от Dmi3yy MODx Custom выше версии 1.8</h4>
 <p>скопировать файл <strong>plugin.templatesedit.php</strong> в папку <strong>assets\plugins\templatesedit</strong></p>
